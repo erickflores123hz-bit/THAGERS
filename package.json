@@ -1,0 +1,18 @@
+{
+  "name": "taghers-store",
+  "version": "1.0.0",
+  "description": "Tienda online de ropa streetwear TAGHER'S inspirada en Figma con probador virtual y sistema de usuarios",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "streetwear",
+    "ecommerce",
+    "try-on",
+    "fashion",
+    "taghers"
+  ],
+  "author": "TAGHER'S",
+  "license": "MIT"
+}
