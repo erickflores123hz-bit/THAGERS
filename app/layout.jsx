@@ -1,10 +1,9 @@
 import './globals.css';
-import Script from 'next/script';
 import { AppProvider } from '../lib/context';
 
 export const metadata = {
   title: "TAGHER'S | Streetwear & Baggy Apparel",
-  description: "Tienda online de ropa streetwear TAGHER'S inspirada en Figma con probador virtual con IA en vivo y sistema de usuarios",
+  description: "Tienda online de ropa streetwear TAGHER'S inspirada en Figma con catálogo interactivo, asesor de talles y sistema de usuarios",
 };
 
 export default function RootLayout({ children }) {
@@ -20,15 +19,6 @@ export default function RootLayout({ children }) {
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        />
-        {/* MediaPipe Pose Scripts para Probador Virtual en Vivo */}
-        <Script
-          src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
-          strategy="beforeInteractive"
-        />
-        <Script
-          src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"
-          strategy="beforeInteractive"
         />
       </head>
       <body>

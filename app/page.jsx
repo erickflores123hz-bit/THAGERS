@@ -9,7 +9,6 @@ import ArFeatureBanner from '../components/ArFeatureBanner';
 import Footer from '../components/Footer';
 
 import ProductModal from '../components/ProductModal';
-import VirtualTryOnModal from '../components/VirtualTryOnModal';
 import SmartSizerModal from '../components/SmartSizerModal';
 import CartDrawer from '../components/CartDrawer';
 import CheckoutModal from '../components/CheckoutModal';
@@ -32,7 +31,7 @@ export default function HomePage() {
       {/* CATÁLOGO PRINCIPAL CON FILTROS Y ORDENAMIENTO */}
       <Catalog />
 
-      {/* BANNER PROBADOR VIRTUAL & ASESOR DE TALLE */}
+      {/* BANNER ASESOR DE TALLE & SILUETAS URBANAS */}
       <ArFeatureBanner />
 
       {/* PIE DE PÁGINA */}
@@ -40,7 +39,6 @@ export default function HomePage() {
 
       {/* MODALES Y ELEMENTOS INTERACTIVOS */}
       <ProductModal />
-      <VirtualTryOnModal />
       <SmartSizerModal />
       <CartDrawer />
       <CheckoutModal />

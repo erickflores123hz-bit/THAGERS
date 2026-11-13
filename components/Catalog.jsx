@@ -15,7 +15,6 @@ export default function Catalog() {
     wishlist,
     toggleWishlist,
     openProductModal,
-    openTryOnModal,
     addToCart
   } = useApp();
 
@@ -164,18 +163,6 @@ export default function Catalog() {
                     loading="lazy"
                     onClick={() => openProductModal(product)}
                   />
-
-                  {/* Acceso directo a probador AR */}
-                  <button
-                    className="quick-ar-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openTryOnModal(product);
-                    }}
-                    title="Probar en Probador IA"
-                  >
-                    <i className="fa-solid fa-camera"></i> PROBAR CON IA
-                  </button>
                 </div>
 
                 <div className="product-card-body">

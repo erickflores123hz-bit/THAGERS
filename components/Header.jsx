@@ -6,7 +6,7 @@ import { useApp } from '../lib/context';
 export default function Header() {
   const {
     setActiveCategory,
-    openTryOnModal,
+    openSmartSizerModal,
     setIsAdminModalOpen,
     setIsAuthModalOpen,
     setIsCartOpen,
@@ -180,17 +180,17 @@ export default function Header() {
 
         {/* ACCIONES DE CABECERA */}
         <div className="header-actions">
-          {/* BOTÓN PROBADOR VIRTUAL */}
+          {/* BOTÓN ASESOR DE TALLE */}
           <button
             className="action-btn ar-tryon-btn"
-            onClick={() => openTryOnModal(null)}
-            title="Probar prendas con tu cámara en vivo"
+            onClick={openSmartSizerModal}
+            title="Calcular mi talle ideal para corte Baggy"
           >
-            <i className="fa-solid fa-camera"></i>
-            <span className="action-label">PROBADOR IA</span>
+            <i className="fa-solid fa-ruler-combined"></i>
+            <span className="action-label">ASESOR TALLE</span>
           </button>
 
-          {/* BOTÓN SUPERVISOR (Visible siempre o para admin) */}
+          {/* BOTÓN SUPERVISOR */}
           <button
             className="action-btn admin-shortcut-btn"
             id="headerAdminBtn"
@@ -263,11 +263,11 @@ export default function Header() {
             <button
               className="mobile-ar-btn"
               onClick={() => {
-                openTryOnModal(null);
+                openSmartSizerModal();
                 setMobileMenuOpen(false);
               }}
             >
-              <i className="fa-solid fa-camera"></i> Abrir Probador Virtual con IA
+              <i className="fa-solid fa-ruler-combined"></i> Asesor de Talle (Corte Baggy)
             </button>
           </div>
         </div>

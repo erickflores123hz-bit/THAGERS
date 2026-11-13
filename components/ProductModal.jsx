@@ -11,7 +11,6 @@ export default function ProductModal() {
     selectedProduct,
     recommendedSize,
     addToCart,
-    openTryOnModal,
     openSmartSizerModal
   } = useApp();
 
@@ -51,11 +50,6 @@ export default function ProductModal() {
       `¡Hola TAGHER'S! Me interesa comprar:\n- Prenda: ${selectedProduct.name}\n- Talle: ${selectedSize}\n- Cantidad: ${qty}\n- Precio: $${formatCurrency(selectedProduct.price * qty)}`
     );
     window.open(`https://wa.me/5491123456789?text=${text}`, '_blank');
-  };
-
-  const handleOpenTryOn = () => {
-    setIsProductModalOpen(false);
-    openTryOnModal(selectedProduct);
   };
 
   const sizes = selectedProduct.category === 'accesorios' ? ['Única'] : ['S', 'M', 'L', 'XL', 'XXL'];
@@ -183,9 +177,6 @@ export default function ProductModal() {
               </button>
               <button className="btn btn-whatsapp btn-block" onClick={handleBuyWhatsApp}>
                 <i className="fa-brands fa-whatsapp"></i> COMPRAR POR WHATSAPP
-              </button>
-              <button className="btn btn-secondary btn-block" onClick={handleOpenTryOn}>
-                <i className="fa-solid fa-camera"></i> PROBAR EN PROBADOR IA
               </button>
             </div>
 

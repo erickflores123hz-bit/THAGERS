@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useApp } from '../lib/context';
 
 export default function ScrollExpandHero() {
-  const { openTryOnModal } = useApp();
+  const { openSmartSizerModal } = useApp();
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
@@ -69,8 +69,8 @@ export default function ScrollExpandHero() {
               <button className="btn btn-primary" onClick={scrollToCatalog}>
                 <i className="fa-solid fa-bag-shopping"></i> EXPLORAR CATÁLOGO
               </button>
-              <button className="btn btn-secondary" onClick={() => openTryOnModal(null)}>
-                <i className="fa-solid fa-camera"></i> PROBADOR VIRTUAL CON IA
+              <button className="btn btn-secondary" onClick={openSmartSizerModal}>
+                <i className="fa-solid fa-ruler-combined"></i> ASESOR DE TALLE
               </button>
             </div>
           </div>

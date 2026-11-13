@@ -148,7 +148,6 @@ export function AppProvider({ children }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
-  const [isTryOnModalOpen, setIsTryOnModalOpen] = useState(false);
   const [isSmartSizerModalOpen, setIsSmartSizerModalOpen] = useState(false);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
@@ -409,13 +408,6 @@ export function AppProvider({ children }) {
     setIsProductModalOpen(true);
   };
 
-  const openTryOnModal = (product = null) => {
-    if (product) {
-      setSelectedProduct(product);
-    }
-    setIsTryOnModalOpen(true);
-  };
-
   const openSmartSizerModal = () => {
     setIsSmartSizerModalOpen(true);
   };
@@ -443,8 +435,6 @@ export function AppProvider({ children }) {
         setIsAuthModalOpen,
         isAdminModalOpen,
         setIsAdminModalOpen,
-        isTryOnModalOpen,
-        setIsTryOnModalOpen,
         isSmartSizerModalOpen,
         setIsSmartSizerModalOpen,
         isProductModalOpen,
@@ -471,7 +461,6 @@ export function AppProvider({ children }) {
         restockProduct,
         createOrder,
         openProductModal,
-        openTryOnModal,
         openSmartSizerModal
       }}
     >
