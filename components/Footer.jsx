@@ -10,7 +10,7 @@ export default function Footer() {
   const handleNewsletter = (e) => {
     e.preventDefault();
     if (email.trim()) {
-      showToast(`¡Gracias por suscribirte con ${email}! Recibirás acceso prioritario a los próximos drops.`, 'success');
+      showToast(`Suscripción confirmada para ${email}`, 'success');
       setEmail('');
     }
   };
@@ -98,7 +98,7 @@ export default function Footer() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  showToast("TAGHER'S v2.0 - Arquitectura Next.js, React 19, Tailwind CSS y MediaPipe Pose", 'info');
+                  showToast("TAGHER'S ARCHIVE - Next.js & React 19", 'info');
                 }}
               >
                 <i className="fa-solid fa-code-branch"></i> Versión del Sistema (Next.js)

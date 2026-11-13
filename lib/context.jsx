@@ -243,7 +243,7 @@ export function AppProvider({ children }) {
       }
     });
 
-    showToast(`✓ "${product.name}" añadido al carrito (Talle ${size})`, 'success');
+    showToast(`"${product.name}" añadido al carrito (Talle ${size})`, 'success');
   };
 
   const removeFromCart = (id, size) => {
@@ -274,7 +274,7 @@ export function AppProvider({ children }) {
     const trimmed = (code || '').trim().toUpperCase();
     if (trimmed === 'TAGHERS10' || trimmed === 'STREET10') {
       setCoupon({ code: trimmed, discountPercent: 10 });
-      showToast('¡Cupón del 10% OFF aplicado con éxito!', 'success');
+      showToast('Cupón del 10% OFF aplicado correctamente', 'success');
       return true;
     } else {
       showToast('Código de cupón inválido o expirado', 'error');
@@ -292,10 +292,10 @@ export function AppProvider({ children }) {
     setWishlist((prev) => {
       const exists = prev.includes(productId);
       if (exists) {
-        showToast('Eliminado de tus favoritos', 'info');
+        showToast('Eliminado de favoritos', 'info');
         return prev.filter((id) => id !== productId);
       } else {
-        showToast('♥ Guardado en tus favoritos', 'success');
+        showToast('Prenda guardada en favoritos', 'success');
         return [...prev, productId];
       }
     });
@@ -308,7 +308,7 @@ export function AppProvider({ children }) {
     );
     if (found) {
       setUser(found);
-      showToast(`¡Bienvenido de vuelta, ${found.name}!`, 'success');
+      showToast(`Sesión iniciada como ${found.name}`, 'success');
       setIsAuthModalOpen(false);
       return true;
     } else {
@@ -320,7 +320,7 @@ export function AppProvider({ children }) {
   const register = (name, email, password) => {
     const exists = users.some((u) => u.email.toLowerCase() === email.toLowerCase());
     if (exists) {
-      showToast('Este correo ya está registrado. Inicia sesión.', 'error');
+      showToast('Este correo ya está registrado', 'error');
       return false;
     }
     const newUser = {
@@ -335,7 +335,7 @@ export function AppProvider({ children }) {
     };
     setUsers((prev) => [...prev, newUser]);
     setUser(newUser);
-    showToast(`¡Cuenta creada con éxito! Bienvenido, ${name}`, 'success');
+    showToast(`Cuenta registrada correctamente`, 'success');
     setIsAuthModalOpen(false);
     return true;
   };

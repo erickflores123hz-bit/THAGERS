@@ -104,7 +104,7 @@ export default function AdminModal() {
     a.download = `taghers_db_backup_${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('¡Backup JSON de la base de datos descargado!', 'success');
+    showToast('Backup JSON de la base de datos descargado', 'success');
   };
 
   // Copiar SQL para Supabase
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS orders (
 );`;
 
     navigator.clipboard.writeText(sql);
-    showToast('✓ Script SQL para Supabase copiado al portapapeles', 'success');
+    showToast('Script SQL para Supabase copiado al portapapeles', 'success');
   };
 
   return (

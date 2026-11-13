@@ -5,13 +5,12 @@ import React from 'react';
 export default function TopAnnouncement() {
   const items = [
     "NUEVA COLECCIÓN Y2K STREETWEAR 2026",
-    "ENVÍOS GRATIS EN COMPRAS MAYORES A $80.000",
-    "3 Y 6 CUOTAS SIN INTERÉS CON TODAS LAS TARJETAS",
-    "10% OFF EXTRA CON EL CÓDIGO: TAGHERS10",
-    "ASESOR DE TALLE INTELIGENTE DISPONIBLE"
+    "ENVÍOS SIN CARGO EN COMPRAS SUPERIORES A $80.000",
+    "3 Y 6 CUOTAS SIN INTERÉS EN TODAS LAS TARJETAS",
+    "10% OFF EXTRA CON CÓDIGO TAGHERS10",
+    "ASESOR DE TALLE CORTE BAGGY"
   ];
 
-  // Duplicamos para ciclo infinito perfecto e imperceptible
   const marqueeItems = [...items, ...items, ...items];
 
   return (
@@ -28,7 +27,7 @@ export default function TopAnnouncement() {
         className="announcement-track"
         style={{
           display: 'inline-flex',
-          gap: '32px',
+          gap: '36px',
           willChange: 'transform'
         }}
       >
@@ -38,14 +37,14 @@ export default function TopAnnouncement() {
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '14px',
-              letterSpacing: '1.8px',
+              gap: '18px',
+              letterSpacing: '1.6px',
               fontSize: '0.72rem',
               fontWeight: 700
             }}
           >
             <span>{text}</span>
-            <span style={{ color: '#e2c044', fontSize: '0.65rem' }}>◆</span>
+            <span style={{ opacity: 0.35, fontSize: '0.75rem' }}>•</span>
           </span>
         ))}
       </div>

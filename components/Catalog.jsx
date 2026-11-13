@@ -41,7 +41,7 @@ export default function Catalog() {
     { key: 'camisetas', label: 'Camisetas & Polos' },
     { key: 'sudaderas', label: 'Sudaderas & Camperas' },
     { key: 'accesorios', label: 'Accesorios' },
-    { key: 'ofertas', label: '🔥 Ofertas' }
+    { key: 'ofertas', label: 'Ofertas' }
   ];
 
   // Filtrado
@@ -189,7 +189,7 @@ export default function Catalog() {
                     <div className="product-brand-line">
                       <span>TAGHER'S ARCHIVE</span>
                       {isLowStock ? (
-                        <span className="stock-pill low">¡Últimas {product.stock} un.!</span>
+                        <span className="stock-pill low">Stock limitado ({product.stock} u.)</span>
                       ) : (
                         <span className="stock-pill in-stock">{product.stock} disponibles</span>
                       )}

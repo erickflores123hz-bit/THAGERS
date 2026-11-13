@@ -55,7 +55,7 @@ export default function SmartSizerModal() {
   const applyRecommendation = () => {
     if (result) {
       setRecommendedSize(result.size);
-      showToast(`¡Talle ${result.size} aplicado como tu talle predeterminado!`, 'success');
+      showToast(`Talle ${result.size} seleccionado como preferido`, 'success');
       setIsSmartSizerModalOpen(false);
     }
   };

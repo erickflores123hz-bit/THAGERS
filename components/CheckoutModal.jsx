@@ -461,7 +461,7 @@ export default function CheckoutModal() {
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.85rem', color: '#bbb' }}>
                   <span>Envío a domicilio:</span>
-                  <span style={{ color: '#4ade80' }}>¡GRATIS!</span>
+                  <span style={{ color: '#4ade80' }}>Bonificado</span>
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #333', fontSize: '1.2rem', fontWeight: 900 }}>
@@ -490,7 +490,7 @@ export default function CheckoutModal() {
             <div className="success-icon">
               <i className="fa-solid fa-circle-check"></i>
             </div>
-            <h2>¡ORDEN CONFIRMADA!</h2>
+            <h2>ORDEN CONFIRMADA</h2>
             <p>
               Tu pago ha sido acreditado y la orden fue registrada con éxito en la base de datos de <b>TAGHER'S</b>.
             </p>

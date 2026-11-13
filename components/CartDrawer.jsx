@@ -188,7 +188,7 @@ export default function CartDrawer() {
                     className="coupon-applied-alert"
                     style={{ display: 'flex' }}
                   >
-                    <span>✓ Cupón {coupon.code} aplicado ({coupon.discountPercent}% OFF)</span>
+                    <span>Cupón {coupon.code} aplicado ({coupon.discountPercent}% OFF)</span>
                     <button onClick={removeCouponCode}>
                       <i className="fa-solid fa-xmark"></i>
                     </button>

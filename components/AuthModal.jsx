@@ -134,13 +134,13 @@ export default function AuthModal() {
 
                     <div className="auth-credentials-hint">
                       <p>
-                        👑 <b>Administrador:</b> admin@taghers.com / admin123{' '}
+                        <b>Administrador:</b> admin@taghers.com / admin123{' '}
                         <button type="button" onClick={quickFillAdmin} style={{ color: '#e2c044', textDecoration: 'underline', marginLeft: '6px' }}>
                           (Autocompletar)
                         </button>
                       </p>
                       <p>
-                        👤 <b>Cliente Demo:</b> demo@taghers.com / 123456{' '}
+                        <b>Cliente Demo:</b> demo@taghers.com / 123456{' '}
                         <button type="button" onClick={quickFillDemo} style={{ color: '#2a9d8f', textDecoration: 'underline', marginLeft: '6px' }}>
                           (Autocompletar)
                         </button>
