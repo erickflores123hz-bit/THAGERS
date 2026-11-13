@@ -13,8 +13,6 @@ export default function Catalog() {
     searchQuery,
     sortBy,
     setSortBy,
-    wishlist,
-    toggleWishlist,
     openProductModal,
     addToCart
   } = useApp();
@@ -125,7 +123,6 @@ export default function Catalog() {
         <motion.div layout className="products-grid" id="productsGrid">
           <AnimatePresence mode="popLayout">
             {sorted.map((product) => {
-              const isFav = wishlist.includes(product.id);
               const isLowStock = product.stock <= 5;
               const primaryImage = product.image || (product.images && product.images[0]);
               const secondaryImage = product.images && product.images.length > 1 ? product.images[1] : null;
@@ -149,20 +146,6 @@ export default function Catalog() {
                     {product.badge && (
                       <span className="product-badge">{product.badge}</span>
                     )}
-
-                    <motion.button
-                      className={`wishlist-btn ${isFav ? 'active' : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleWishlist(product.id);
-                      }}
-                      whileHover={{ scale: 1.15 }}
-                      whileTap={{ scale: 0.8 }}
-                      transition={{ duration: 0.15 }}
-                      title={isFav ? "Eliminar de favoritos" : "Guardar en favoritos"}
-                    >
-                      <i className={isFav ? "fa-solid fa-heart" : "fa-regular fa-heart"}></i>
-                    </motion.button>
 
                     {/* IMAGEN PRINCIPAL (CON ZOOM SUAVE) */}
                     <img

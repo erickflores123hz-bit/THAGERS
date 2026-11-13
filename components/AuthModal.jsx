@@ -230,7 +230,7 @@ export default function AuthModal() {
 
                 <div className="profile-section">
                   <h4>
-                    <i className="fa-solid fa-heart"></i> Guardados en Favoritos ({wishlistItems.length})
+                    <i className="fa-solid fa-bookmark"></i> Prendas Guardadas ({wishlistItems.length})
                   </h4>
                   <div className="wishlist-previews">
                     {wishlistItems.length === 0 ? (
