@@ -3,6 +3,7 @@
 import React from 'react';
 import { useApp } from '../lib/context';
 import { formatCurrency } from '../lib/products';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Catalog() {
   const {
@@ -34,9 +35,17 @@ export default function Catalog() {
     ofertas: 'OFERTAS & LIQUIDACIÓN'
   };
 
+  const categoriesList = [
+    { key: 'todos', label: 'Todos' },
+    { key: 'vaqueros', label: 'Vaqueros Baggy' },
+    { key: 'camisetas', label: 'Camisetas & Polos' },
+    { key: 'sudaderas', label: 'Sudaderas & Camperas' },
+    { key: 'accesorios', label: 'Accesorios' },
+    { key: 'ofertas', label: '🔥 Ofertas' }
+  ];
+
   // Filtrado
   let filtered = products.filter((p) => {
-    // Categoría
     if (activeCategory === 'todos') return true;
     if (activeCategory === 'ofertas') return Boolean(p.isOffer);
     if (activeCategory === 'ropa') {
@@ -63,7 +72,6 @@ export default function Catalog() {
     if (sortBy === 'price-low') return a.price - b.price;
     if (sortBy === 'price-high') return b.price - a.price;
     if (sortBy === 'newest') return (b.unitsSold || 0) - (a.unitsSold || 0);
-    // featured por defecto
     return 0;
   });
 
@@ -82,42 +90,18 @@ export default function Catalog() {
         {/* FILTROS Y ORDENAMIENTO */}
         <div className="catalog-controls">
           <div className="category-pills" id="categoryPills">
-            <button
-              className={`pill ${activeCategory === 'todos' ? 'active' : ''}`}
-              onClick={() => setActiveCategory('todos')}
-            >
-              Todos
-            </button>
-            <button
-              className={`pill ${activeCategory === 'vaqueros' ? 'active' : ''}`}
-              onClick={() => setActiveCategory('vaqueros')}
-            >
-              Vaqueros Baggy
-            </button>
-            <button
-              className={`pill ${activeCategory === 'camisetas' ? 'active' : ''}`}
-              onClick={() => setActiveCategory('camisetas')}
-            >
-              Camisetas & Polos
-            </button>
-            <button
-              className={`pill ${activeCategory === 'sudaderas' ? 'active' : ''}`}
-              onClick={() => setActiveCategory('sudaderas')}
-            >
-              Sudaderas & Camperas
-            </button>
-            <button
-              className={`pill ${activeCategory === 'accesorios' ? 'active' : ''}`}
-              onClick={() => setActiveCategory('accesorios')}
-            >
-              Accesorios
-            </button>
-            <button
-              className={`pill ${activeCategory === 'ofertas' ? 'active' : ''}`}
-              onClick={() => setActiveCategory('ofertas')}
-            >
-              🔥 Ofertas
-            </button>
+            {categoriesList.map((cat) => (
+              <motion.button
+                key={cat.key}
+                className={`pill ${activeCategory === cat.key ? 'active' : ''}`}
+                onClick={() => setActiveCategory(cat.key)}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.15 }}
+              >
+                {cat.label}
+              </motion.button>
+            ))}
           </div>
 
           <div className="sort-wrapper">
@@ -136,86 +120,135 @@ export default function Catalog() {
         </div>
       </div>
 
-      {/* GRILLA DE PRODUCTOS */}
+      {/* GRILLA DE PRODUCTOS CON REORDENAMIENTO FLUIDO (LAYOUT ANIMATION) */}
       {sorted.length > 0 ? (
-        <div className="products-grid" id="productsGrid">
-          {sorted.map((product) => {
-            const isFav = wishlist.includes(product.id);
-            const isLowStock = product.stock <= 5;
+        <motion.div layout className="products-grid" id="productsGrid">
+          <AnimatePresence mode="popLayout">
+            {sorted.map((product) => {
+              const isFav = wishlist.includes(product.id);
+              const isLowStock = product.stock <= 5;
+              const primaryImage = product.image || (product.images && product.images[0]);
+              const secondaryImage = product.images && product.images.length > 1 ? product.images[1] : null;
 
-            return (
-              <div className="product-card" key={product.id}>
-                <div className="product-card-thumb">
-                  {product.badge && (
-                    <span className="product-badge">{product.badge}</span>
-                  )}
-                  <button
-                    className={`wishlist-btn ${isFav ? 'active' : ''}`}
-                    onClick={() => toggleWishlist(product.id)}
-                    title={isFav ? "Eliminar de favoritos" : "Guardar en favoritos"}
-                  >
-                    <i className={isFav ? "fa-solid fa-heart" : "fa-regular fa-heart"}></i>
-                  </button>
-
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    loading="lazy"
+              return (
+                <motion.div
+                  layout
+                  key={product.id}
+                  initial={{ opacity: 0, scale: 0.94 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.94 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                  className="product-card group"
+                  whileHover={{ y: -5 }}
+                >
+                  {/* CONTENEDOR DE IMAGEN CON HOVER INTELIGENTE & CROSSFADE */}
+                  <div
+                    className="product-card-thumb relative overflow-hidden cursor-pointer"
                     onClick={() => openProductModal(product)}
-                  />
-                </div>
+                  >
+                    {product.badge && (
+                      <span className="product-badge">{product.badge}</span>
+                    )}
 
-                <div className="product-card-body">
-                  <div className="product-brand-line">
-                    <span>TAGHER'S ARCHIVE</span>
-                    {isLowStock ? (
-                      <span className="stock-pill low">¡Últimas {product.stock} un.!</span>
-                    ) : (
-                      <span className="stock-pill in-stock">{product.stock} disponibles</span>
+                    <motion.button
+                      className={`wishlist-btn ${isFav ? 'active' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleWishlist(product.id);
+                      }}
+                      whileHover={{ scale: 1.15 }}
+                      whileTap={{ scale: 0.8 }}
+                      transition={{ duration: 0.15 }}
+                      title={isFav ? "Eliminar de favoritos" : "Guardar en favoritos"}
+                    >
+                      <i className={isFav ? "fa-solid fa-heart" : "fa-regular fa-heart"}></i>
+                    </motion.button>
+
+                    {/* IMAGEN PRINCIPAL (CON ZOOM SUAVE) */}
+                    <img
+                      src={primaryImage}
+                      alt={product.name}
+                      loading="lazy"
+                      className={`w-full h-full object-cover transition-all duration-500 ease-out group-hover:scale-105 ${
+                        secondaryImage ? 'group-hover:opacity-0' : ''
+                      }`}
+                    />
+
+                    {/* IMAGEN SECUNDARIA (CROSSFADE ELEGANTE AL PASAR EL MOUSE) */}
+                    {secondaryImage && (
+                      <img
+                        src={secondaryImage}
+                        alt={`${product.name} - Vista alternativa`}
+                        loading="lazy"
+                        className="absolute inset-0 w-full h-full object-cover opacity-0 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:scale-105 pointer-events-none"
+                      />
                     )}
                   </div>
 
-                  <h3
-                    className="product-card-title"
-                    onClick={() => openProductModal(product)}
-                  >
-                    {product.name}
-                  </h3>
+                  <div className="product-card-body">
+                    <div className="product-brand-line">
+                      <span>TAGHER'S ARCHIVE</span>
+                      {isLowStock ? (
+                        <span className="stock-pill low">¡Últimas {product.stock} un.!</span>
+                      ) : (
+                        <span className="stock-pill in-stock">{product.stock} disponibles</span>
+                      )}
+                    </div>
 
-                  <div className="product-card-price">
-                    <span className="price-now">${formatCurrency(product.price)}</span>
-                    {product.oldPrice && (
-                      <span className="price-was">${formatCurrency(product.oldPrice)}</span>
-                    )}
-                  </div>
-
-                  <div className="product-card-actions">
-                    <button
-                      className="btn btn-sm btn-outline"
+                    <h3
+                      className="product-card-title cursor-pointer transition-colors duration-200 hover:text-black"
                       onClick={() => openProductModal(product)}
                     >
-                      DETALLES
-                    </button>
-                    <button
-                      className="btn btn-sm btn-primary"
-                      onClick={() => addToCart(product)}
-                    >
-                      <i className="fa-solid fa-bag-shopping"></i> AÑADIR
-                    </button>
+                      {product.name}
+                    </h3>
+
+                    <div className="product-card-price">
+                      <span className="price-now">${formatCurrency(product.price)}</span>
+                      {product.oldPrice && (
+                        <span className="price-was">${formatCurrency(product.oldPrice)}</span>
+                      )}
+                    </div>
+
+                    <div className="product-card-actions">
+                      <motion.button
+                        className="btn btn-sm btn-outline"
+                        onClick={() => openProductModal(product)}
+                        whileHover={{ scale: 1.025 }}
+                        whileTap={{ scale: 0.96 }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        DETALLES
+                      </motion.button>
+                      
+                      <motion.button
+                        className="btn btn-sm btn-primary"
+                        onClick={() => addToCart(product)}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.94 }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        <i className="fa-solid fa-bag-shopping"></i> AÑADIR
+                      </motion.button>
+                    </div>
                   </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
       ) : (
         <div className="empty-state" id="emptyState" style={{ display: 'flex' }}>
           <i className="fa-solid fa-ghost"></i>
           <h3>No encontramos resultados</h3>
           <p>Intenta con otra palabra clave o selecciona otra categoría.</p>
-          <button className="btn btn-dark" onClick={() => setActiveCategory('todos')}>
+          <motion.button
+            className="btn btn-dark"
+            onClick={() => setActiveCategory('todos')}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.96 }}
+          >
             RESTAURAR FILTROS
-          </button>
+          </motion.button>
         </div>
       )}
     </main>

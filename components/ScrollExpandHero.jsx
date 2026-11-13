@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useApp } from '../lib/context';
+import { motion } from 'framer-motion';
 
 export default function ScrollExpandHero() {
   const { openSmartSizerModal } = useApp();
@@ -57,24 +58,73 @@ export default function ScrollExpandHero() {
             id="scrollExpandImg"
           />
           <div className="scroll-expand-overlay"></div>
-          <div className="scroll-expand-content">
-            <div className="expand-badge">
+          
+          <motion.div
+            className="scroll-expand-content"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <motion.div
+              className="expand-badge"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
               <i className="fa-solid fa-crown"></i> TAGHER'S STREETWEAR ARCHIVE 2026
-            </div>
-            <h2 className="expand-title">BAGGY & VINTAGE REVOLUTION</h2>
-            <p className="expand-desc">
+            </motion.div>
+
+            <motion.h2
+              className="expand-title"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            >
+              BAGGY & VINTAGE REVOLUTION
+            </motion.h2>
+
+            <motion.p
+              className="expand-desc"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45, duration: 0.7 }}
+            >
               Vaqueros con bordados Ecko Unltd, remeras góticas Affliction, buzos True Religion con herradura, cadenas de plata y siluetas auténticas de los 90s y 2000s.
-            </p>
-            <div className="expand-actions">
-              <button className="btn btn-primary" onClick={scrollToCatalog}>
+            </motion.p>
+
+            <motion.div
+              className="expand-actions"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+            >
+              <motion.button
+                className="btn btn-primary"
+                onClick={scrollToCatalog}
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: 0.2 }}
+              >
                 <i className="fa-solid fa-bag-shopping"></i> EXPLORAR CATÁLOGO
-              </button>
-              <button className="btn btn-secondary" onClick={openSmartSizerModal}>
+              </motion.button>
+              
+              <motion.button
+                className="btn btn-secondary"
+                onClick={openSmartSizerModal}
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: 0.2 }}
+              >
                 <i className="fa-solid fa-ruler-combined"></i> ASESOR DE TALLE
-              </button>
-            </div>
-          </div>
-          <div className="scroll-progress-hint" id="scrollProgressHint" style={{ opacity: 1 - scrollProgress * 1.5 }}>
+              </motion.button>
+            </motion.div>
+          </motion.div>
+
+          <div
+            className="scroll-progress-hint"
+            id="scrollProgressHint"
+            style={{ opacity: Math.max(0, 1 - scrollProgress * 1.5) }}
+          >
             <span>DESLIZA PARA EXPANDIR</span>
             <i className="fa-solid fa-angles-down"></i>
           </div>

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useApp } from '../lib/context';
 import { formatCurrency } from '../lib/products';
 import confetti from 'canvas-confetti';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CheckoutModal() {
   const {
@@ -101,20 +102,43 @@ export default function CheckoutModal() {
   };
 
   return (
-    <div className="modal-overlay active" id="checkoutModal">
-      <div className="modal-card modal-checkout" style={{ maxWidth: '640px' }}>
-        <button
-          className="modal-close-btn"
-          onClick={() => {
-            if (!isProcessing) {
-              setIsCheckoutModalOpen(false);
-            }
-          }}
-          title="Cerrar checkout"
-          disabled={isProcessing}
-        >
-          <i className="fa-solid fa-xmark"></i>
-        </button>
+    <AnimatePresence>
+      {isCheckoutModalOpen && (
+        <div className="modal-overlay active" id="checkoutModal" style={{ zIndex: 1100 }}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 bg-black/60"
+            style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+            onClick={() => {
+              if (!isProcessing) setIsCheckoutModalOpen(false);
+            }}
+          />
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 16 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="modal-card modal-checkout"
+            style={{ maxWidth: '640px', position: 'relative', zIndex: 10 }}
+          >
+            <motion.button
+              className="modal-close-btn"
+              onClick={() => {
+                if (!isProcessing) {
+                  setIsCheckoutModalOpen(false);
+                }
+              }}
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
+              title="Cerrar checkout"
+              disabled={isProcessing}
+            >
+              <i className="fa-solid fa-xmark"></i>
+            </motion.button>
 
         {isProcessing ? (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
@@ -500,7 +524,9 @@ export default function CheckoutModal() {
             </button>
           </div>
         )}
-      </div>
-    </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useApp } from '../lib/context';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Header() {
   const {
@@ -178,103 +179,132 @@ export default function Header() {
           </ul>
         </nav>
 
-        {/* ACCIONES DE CABECERA */}
+        {/* ACCIONES DE CABECERA CON MICRO-INTERACCIONES */}
         <div className="header-actions">
           {/* BOTÓN ASESOR DE TALLE */}
-          <button
+          <motion.button
             className="action-btn ar-tryon-btn"
             onClick={openSmartSizerModal}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.94 }}
             title="Calcular mi talle ideal para corte Baggy"
           >
             <i className="fa-solid fa-ruler-combined"></i>
             <span className="action-label">ASESOR TALLE</span>
-          </button>
+          </motion.button>
 
           {/* BOTÓN SUPERVISOR (EXCLUSIVO PARA CUENTA ADMINISTRADOR) */}
           {isUserAdmin && (
-            <button
+            <motion.button
               className="action-btn admin-shortcut-btn"
               id="headerAdminBtn"
               onClick={() => setIsAdminModalOpen(true)}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.94 }}
               title="Panel de Supervisión y Base de Datos"
             >
               <i className="fa-solid fa-chart-line"></i>
               <span className="action-label admin-label">SUPERVISOR</span>
-            </button>
+            </motion.button>
           )}
 
           {/* BOTÓN USUARIO */}
           <div className="user-menu-wrapper">
-            <button
+            <motion.button
               className="action-btn"
               id="userBtn"
               onClick={handleUserClick}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.94 }}
               title="Mi Cuenta"
             >
               <i className="fa-regular fa-user"></i>
               <span className="user-badge-name" id="userBadgeName">
                 {user ? user.name.split(' ')[0].toUpperCase() : 'ENTRAR'}
               </span>
-            </button>
+            </motion.button>
           </div>
 
           {/* BOTÓN CARRITO */}
-          <button
+          <motion.button
             className="action-btn cart-btn"
             onClick={() => setIsCartOpen(true)}
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.92 }}
             title="Carrito de compras"
           >
             <i className="fa-solid fa-bag-shopping"></i>
-            <span className="cart-count-badge" id="cartCountBadge">
-              {totalCartCount}
-            </span>
-          </button>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={totalCartCount}
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.5, opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="cart-count-badge"
+                id="cartCountBadge"
+              >
+                {totalCartCount}
+              </motion.span>
+            </AnimatePresence>
+          </motion.button>
 
           {/* BOTÓN MENÚ MÓVIL */}
-          <button
+          <motion.button
             className="mobile-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            whileTap={{ scale: 0.9 }}
             title="Menú"
           >
             <i className={mobileMenuOpen ? "fa-solid fa-xmark" : "fa-solid fa-bars"}></i>
-          </button>
+          </motion.button>
         </div>
       </div>
 
-      {/* MENÚ MÓVIL DESPLEGABLE */}
-      {mobileMenuOpen && (
-        <div className="mobile-nav-drawer" id="mobileNavDrawer" style={{ display: 'block' }}>
-          <div className="mobile-nav-inner">
-            <a href="#catalogSection" onClick={(e) => { e.preventDefault(); handleCategoryClick('todos'); }}>Ver Todo</a>
-            <a href="#catalogSection" onClick={(e) => { e.preventDefault(); handleCategoryClick('vaqueros'); }}>Vaqueros Baggy</a>
-            <a href="#catalogSection" onClick={(e) => { e.preventDefault(); handleCategoryClick('camisetas'); }}>Camisetas & Polos</a>
-            <a href="#catalogSection" onClick={(e) => { e.preventDefault(); handleCategoryClick('sudaderas'); }}>Sudaderas & Camperas</a>
-            <a href="#catalogSection" onClick={(e) => { e.preventDefault(); handleCategoryClick('accesorios'); }}>Accesorios (Cadenas, Anillos)</a>
-            {isUserAdmin && (
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsAdminModalOpen(true);
+      {/* MENÚ MÓVIL DESPLEGABLE CON ANIMACIÓN SUAVE */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="mobile-nav-drawer"
+            id="mobileNavDrawer"
+            style={{ display: 'block', overflow: 'hidden' }}
+          >
+            <div className="mobile-nav-inner">
+              <a href="#catalogSection" onClick={(e) => { e.preventDefault(); handleCategoryClick('todos'); }}>Ver Todo</a>
+              <a href="#catalogSection" onClick={(e) => { e.preventDefault(); handleCategoryClick('vaqueros'); }}>Vaqueros Baggy</a>
+              <a href="#catalogSection" onClick={(e) => { e.preventDefault(); handleCategoryClick('camisetas'); }}>Camisetas & Polos</a>
+              <a href="#catalogSection" onClick={(e) => { e.preventDefault(); handleCategoryClick('sudaderas'); }}>Sudaderas & Camperas</a>
+              <a href="#catalogSection" onClick={(e) => { e.preventDefault(); handleCategoryClick('accesorios'); }}>Accesorios (Cadenas, Anillos)</a>
+              {isUserAdmin && (
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsAdminModalOpen(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  style={{ color: '#e63946' }}
+                >
+                  <i className="fa-solid fa-chart-line"></i> Panel Supervisor (Base de Datos)
+                </a>
+              )}
+              <button
+                className="mobile-ar-btn"
+                onClick={() => {
+                  openSmartSizerModal();
                   setMobileMenuOpen(false);
                 }}
-                style={{ color: '#e63946' }}
               >
-                <i className="fa-solid fa-chart-line"></i> Panel Supervisor (Base de Datos)
-              </a>
-            )}
-            <button
-              className="mobile-ar-btn"
-              onClick={() => {
-                openSmartSizerModal();
-                setMobileMenuOpen(false);
-              }}
-            >
-              <i className="fa-solid fa-ruler-combined"></i> Asesor de Talle (Corte Baggy)
-            </button>
-          </div>
-        </div>
-      )}
+                <i className="fa-solid fa-ruler-combined"></i> Asesor de Talle (Corte Baggy)
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

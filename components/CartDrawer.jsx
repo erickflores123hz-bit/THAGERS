@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../lib/context';
 import { formatCurrency } from '../lib/products';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CartDrawer() {
   const {
@@ -18,8 +19,6 @@ export default function CartDrawer() {
   } = useApp();
 
   const [couponInputText, setCouponInputText] = useState('');
-
-  if (!isCartOpen) return null;
 
   const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
@@ -39,132 +38,211 @@ export default function CartDrawer() {
   };
 
   return (
-    <>
-      <div
-        className="cart-drawer-overlay active"
-        id="cartOverlay"
-        onClick={() => setIsCartOpen(false)}
-      />
-      <aside className="cart-drawer active" id="cartDrawer">
-        <div className="cart-header">
-          <div className="cart-title">
-            <i className="fa-solid fa-bag-shopping"></i>
-            <span>TU CESTA ({totalCount})</span>
-          </div>
-          <button
-            className="modal-close-btn"
+    <AnimatePresence>
+      {isCartOpen && (
+        <>
+          {/* FONDO OSCURECIDO CON DESENFOQUE ELEGANTE (BACKDROP BLUR) */}
+          <motion.div
+            key="cart-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="cart-drawer-overlay active"
+            id="cartOverlay"
+            style={{
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+              backgroundColor: 'rgba(0, 0, 0, 0.65)'
+            }}
             onClick={() => setIsCartOpen(false)}
-            title="Cerrar carrito"
+          />
+
+          {/* PANEL DESLIZABLE (SLIDE-OVER SPRING DESDE LA DERECHA) */}
+          <motion.aside
+            key="cart-drawer"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+            className="cart-drawer active"
+            id="cartDrawer"
           >
-            <i className="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-
-        {/* LISTA DE ITEMS */}
-        <div className="cart-items-container">
-          {cart.length === 0 ? (
-            <div className="empty-cart-state" style={{ padding: '60px 20px', textAlign: 'center' }}>
-              <i className="fa-solid fa-bag-shopping" style={{ fontSize: '3rem', opacity: 0.25, marginBottom: '16px' }}></i>
-              <h4 style={{ fontWeight: 800, marginBottom: '8px' }}>Tu carrito está vacío</h4>
-              <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: '24px' }}>
-                Explora el catálogo y añade tus prendas favoritas.
-              </p>
-              <button className="btn btn-dark" onClick={() => setIsCartOpen(false)}>
-                EXPLORAR PRENDAS
-              </button>
+            <div className="cart-header">
+              <div className="cart-title">
+                <i className="fa-solid fa-bag-shopping"></i>
+                <span>TU CESTA ({totalCount})</span>
+              </div>
+              <motion.button
+                className="modal-close-btn"
+                onClick={() => setIsCartOpen(false)}
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ duration: 0.15 }}
+                title="Cerrar carrito"
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </motion.button>
             </div>
-          ) : (
-            cart.map((item) => (
-              <div className="cart-item-card" key={`${item.id}-${item.size}`}>
-                <img src={item.image} alt={item.name} />
-                <div className="cart-item-info">
-                  <h4>{item.name}</h4>
-                  <span className="cart-item-size">Talle: <b>{item.size}</b></span>
-                  <div className="cart-item-bottom">
-                    <span className="cart-item-price">${formatCurrency(item.price)}</span>
-                    <div className="cart-qty-controls">
-                      <button onClick={() => updateCartQty(item.id, item.size, -1)}>
-                        <i className="fa-solid fa-minus"></i>
-                      </button>
-                      <span>{item.qty}</span>
-                      <button onClick={() => updateCartQty(item.id, item.size, 1)}>
-                        <i className="fa-solid fa-plus"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  className="cart-remove-item"
-                  onClick={() => removeFromCart(item.id, item.size)}
-                  title="Eliminar de la cesta"
+
+            {/* LISTA DE ITEMS CON ANIMACIÓN LIMPIA DE ENTRADA / SALIDA */}
+            <div className="cart-items-container">
+              {cart.length === 0 ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="empty-cart-state"
+                  style={{ padding: '60px 20px', textAlign: 'center' }}
                 >
-                  <i className="fa-solid fa-trash-can"></i>
-                </button>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* FOOTER DEL CARRITO */}
-        {cart.length > 0 && (
-          <div className="cart-footer">
-            <div className="coupon-box">
-              <input
-                type="text"
-                placeholder="Código de descuento (ej. TAGHERS10)"
-                value={couponInputText}
-                onChange={(e) => setCouponInputText(e.target.value)}
-              />
-              <button onClick={handleApplyCoupon}>APLICAR</button>
+                  <i className="fa-solid fa-bag-shopping" style={{ fontSize: '3rem', opacity: 0.25, marginBottom: '16px' }}></i>
+                  <h4 style={{ fontWeight: 800, marginBottom: '8px' }}>Tu cesta está vacía</h4>
+                  <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: '24px' }}>
+                    Explora el catálogo y añade tus prendas streetwear favoritas.
+                  </p>
+                  <motion.button
+                    className="btn btn-dark"
+                    onClick={() => setIsCartOpen(false)}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.96 }}
+                  >
+                    EXPLORAR PRENDAS
+                  </motion.button>
+                </motion.div>
+              ) : (
+                <AnimatePresence mode="popLayout">
+                  {cart.map((item) => (
+                    <motion.div
+                      key={`${item.id}-${item.size}`}
+                      layout
+                      initial={{ opacity: 0, x: 25 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -35, height: 0, marginBottom: 0, paddingBottom: 0, overflow: 'hidden' }}
+                      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                      className="cart-item-card"
+                    >
+                      <img src={item.image} alt={item.name} />
+                      <div className="cart-item-info">
+                        <h4>{item.name}</h4>
+                        <span className="cart-item-size">Talle: <b>{item.size}</b></span>
+                        <div className="cart-item-bottom">
+                          <span className="cart-item-price">${formatCurrency(item.price)}</span>
+                          <div className="cart-qty-controls">
+                            <motion.button
+                              onClick={() => updateCartQty(item.id, item.size, -1)}
+                              whileHover={{ scale: 1.15 }}
+                              whileTap={{ scale: 0.85 }}
+                            >
+                              <i className="fa-solid fa-minus"></i>
+                            </motion.button>
+                            <span>{item.qty}</span>
+                            <motion.button
+                              onClick={() => updateCartQty(item.id, item.size, 1)}
+                              whileHover={{ scale: 1.15 }}
+                              whileTap={{ scale: 0.85 }}
+                            >
+                              <i className="fa-solid fa-plus"></i>
+                            </motion.button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <motion.button
+                        className="cart-remove-item"
+                        onClick={() => removeFromCart(item.id, item.size)}
+                        whileHover={{ scale: 1.15, color: '#e63946' }}
+                        whileTap={{ scale: 0.85 }}
+                        title="Eliminar de la cesta"
+                      >
+                        <i className="fa-solid fa-trash-can"></i>
+                      </motion.button>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              )}
             </div>
 
-            {coupon && (
-              <div className="coupon-applied-alert" style={{ display: 'flex' }}>
-                <span>✓ Cupón {coupon.code} aplicado ({coupon.discountPercent}% OFF)</span>
-                <button onClick={removeCouponCode}>
-                  <i className="fa-solid fa-xmark"></i>
-                </button>
+            {/* FOOTER DEL CARRITO */}
+            {cart.length > 0 && (
+              <div className="cart-footer">
+                <div className="coupon-box">
+                  <input
+                    type="text"
+                    placeholder="Código (ej. TAGHERS10)"
+                    value={couponInputText}
+                    onChange={(e) => setCouponInputText(e.target.value)}
+                  />
+                  <motion.button
+                    onClick={handleApplyCoupon}
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.94 }}
+                  >
+                    APLICAR
+                  </motion.button>
+                </div>
+
+                {coupon && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="coupon-applied-alert"
+                    style={{ display: 'flex' }}
+                  >
+                    <span>✓ Cupón {coupon.code} aplicado ({coupon.discountPercent}% OFF)</span>
+                    <button onClick={removeCouponCode}>
+                      <i className="fa-solid fa-xmark"></i>
+                    </button>
+                  </motion.div>
+                )}
+
+                <div className="cart-summary-row">
+                  <span>Subtotal</span>
+                  <span>${formatCurrency(subtotal)}</span>
+                </div>
+
+                {coupon && (
+                  <div className="cart-summary-row discount-row" style={{ display: 'flex' }}>
+                    <span>Descuento ({coupon.discountPercent}%)</span>
+                    <span>-${formatCurrency(discountAmount)}</span>
+                  </div>
+                )}
+
+                <div className="cart-summary-row total-row">
+                  <span>Total</span>
+                  <span>${formatCurrency(total)}</span>
+                </div>
+
+                <motion.button
+                  className="btn btn-primary btn-block checkout-btn"
+                  onClick={handleCheckoutModal}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <i className="fa-solid fa-lock"></i> FINALIZAR COMPRA
+                </motion.button>
+
+                <div className="cart-payment-badges" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', margin: '14px 0 6px', fontSize: '0.8rem', color: '#777' }}>
+                  <span><i className="fa-regular fa-credit-card"></i> Tarjetas</span>
+                  <span>•</span>
+                  <span><i className="fa-solid fa-qrcode"></i> Mercado Pago</span>
+                  <span>•</span>
+                  <span><i className="fa-solid fa-shield-halved"></i> Pago Seguro</span>
+                </div>
+
+                <motion.button
+                  className="btn btn-sm btn-outline btn-block mt-2"
+                  onClick={() => setIsCartOpen(false)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  SEGUIR COMPRANDO
+                </motion.button>
               </div>
             )}
-
-            <div className="cart-summary-row">
-              <span>Subtotal</span>
-              <span>${formatCurrency(subtotal)}</span>
-            </div>
-
-            {coupon && (
-              <div className="cart-summary-row discount-row" style={{ display: 'flex' }}>
-                <span>Descuento ({coupon.discountPercent}%)</span>
-                <span>-${formatCurrency(discountAmount)}</span>
-              </div>
-            )}
-
-            <div className="cart-summary-row total-row">
-              <span>Total</span>
-              <span>${formatCurrency(total)}</span>
-            </div>
-
-            <button className="btn btn-primary btn-block checkout-btn" onClick={handleCheckoutModal}>
-              <i className="fa-solid fa-lock"></i> FINALIZAR COMPRA
-            </button>
-
-            <div className="cart-payment-badges" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', margin: '14px 0 6px', fontSize: '0.8rem', color: '#777' }}>
-              <span><i className="fa-regular fa-credit-card"></i> Tarjetas</span>
-              <span>•</span>
-              <span><i className="fa-solid fa-qrcode"></i> Mercado Pago</span>
-              <span>•</span>
-              <span><i className="fa-solid fa-shield-halved"></i> Pago Seguro</span>
-            </div>
-
-            <button
-              className="btn btn-sm btn-outline btn-block mt-2"
-              onClick={() => setIsCartOpen(false)}
-            >
-              SEGUIR COMPRANDO
-            </button>
-          </div>
-        )}
-      </aside>
-    </>
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
   );
 }

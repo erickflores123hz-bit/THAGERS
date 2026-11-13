@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../lib/context';
 import { formatCurrency } from '../lib/products';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AdminModal() {
   const {
@@ -25,30 +26,54 @@ export default function AdminModal() {
   // Control estricto de acceso exclusivo para rol de Administrador
   if (user?.role !== 'admin') {
     return (
-      <div className="modal-overlay active" id="adminModal">
-        <div className="modal-card" style={{ maxWidth: '420px', textAlign: 'center', padding: '36px 24px', borderRadius: '16px' }}>
-          <i className="fa-solid fa-shield-halved" style={{ fontSize: '3.2rem', color: '#e63946', marginBottom: '16px' }}></i>
-          <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '8px' }}>ACCESO RESTRINGIDO</h3>
-          <p style={{ color: '#666', fontSize: '0.9rem', lineHeight: '1.5', marginBottom: '24px' }}>
-            Este panel de supervisión y base de datos es de uso exclusivo para cuentas con rol de <b>Administrador</b>.
-          </p>
-          <button
-            className="btn btn-primary btn-block"
-            onClick={() => {
-              setIsAdminModalOpen(false);
-              setIsAuthModalOpen(true);
-            }}
-          >
-            <i className="fa-solid fa-lock"></i> INICIAR SESIÓN COMO ADMIN
-          </button>
-          <button
-            className="btn btn-sm btn-outline btn-block mt-2"
-            onClick={() => setIsAdminModalOpen(false)}
-          >
-            VOLVER A LA TIENDA
-          </button>
-        </div>
-      </div>
+      <AnimatePresence>
+        {isAdminModalOpen && (
+          <div className="modal-overlay active" id="adminModal" style={{ zIndex: 1100 }}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 bg-black/60"
+              style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+              onClick={() => setIsAdminModalOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 16 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="modal-card"
+              style={{ maxWidth: '420px', textAlign: 'center', padding: '36px 24px', borderRadius: '16px', position: 'relative', zIndex: 10 }}
+            >
+              <i className="fa-solid fa-shield-halved" style={{ fontSize: '3.2rem', color: '#e63946', marginBottom: '16px' }}></i>
+              <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '8px' }}>ACCESO RESTRINGIDO</h3>
+              <p style={{ color: '#666', fontSize: '0.9rem', lineHeight: '1.5', marginBottom: '24px' }}>
+                Este panel de supervisión y base de datos es de uso exclusivo para cuentas con rol de <b>Administrador</b>.
+              </p>
+              <motion.button
+                className="btn btn-primary btn-block"
+                onClick={() => {
+                  setIsAdminModalOpen(false);
+                  setIsAuthModalOpen(true);
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <i className="fa-solid fa-lock"></i> INICIAR SESIÓN COMO ADMIN
+              </motion.button>
+              <motion.button
+                className="btn btn-sm btn-outline btn-block mt-2"
+                onClick={() => setIsAdminModalOpen(false)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                VOLVER A LA TIENDA
+              </motion.button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     );
   }
 
@@ -123,26 +148,48 @@ CREATE TABLE IF NOT EXISTS orders (
   };
 
   return (
-    <div className="modal-overlay active" id="adminModal">
-      <div className="modal-card modal-admin">
-        <div className="admin-header">
-          <div className="admin-title-wrap">
-            <i className="fa-solid fa-chart-line"></i>
-            <div>
-              <h3>PANEL DE SUPERVISIÓN & BASE DE DATOS</h3>
-              <span className="admin-sub">
-                Métricas de ventas, control de inventario y visor de base de datos
-              </span>
-            </div>
-          </div>
-          <button
-            className="modal-close-btn"
+    <AnimatePresence>
+      {isAdminModalOpen && (
+        <div className="modal-overlay active" id="adminModal" style={{ zIndex: 1100 }}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 bg-black/60"
+            style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
             onClick={() => setIsAdminModalOpen(false)}
-            title="Cerrar panel supervisor"
+          />
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 16 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="modal-card modal-admin"
+            style={{ position: 'relative', zIndex: 10 }}
           >
-            <i className="fa-solid fa-xmark"></i>
-          </button>
-        </div>
+            <div className="admin-header">
+              <div className="admin-title-wrap">
+                <i className="fa-solid fa-chart-line"></i>
+                <div>
+                  <h3>PANEL DE SUPERVISIÓN & BASE DE DATOS</h3>
+                  <span className="admin-sub">
+                    Métricas de ventas, control de inventario y visor de base de datos
+                  </span>
+                </div>
+              </div>
+              <motion.button
+                className="modal-close-btn"
+                onClick={() => setIsAdminModalOpen(false)}
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ duration: 0.15 }}
+                title="Cerrar panel supervisor"
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </motion.button>
+            </div>
 
         {/* TABS DE SUPERVISIÓN */}
         <div className="admin-tabs">
@@ -498,7 +545,9 @@ CREATE TABLE IF NOT EXISTS orders (
             </div>
           )}
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }
