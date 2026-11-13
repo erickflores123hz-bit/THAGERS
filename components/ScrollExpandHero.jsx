@@ -35,9 +35,13 @@ export default function ScrollExpandHero() {
     }
   };
 
-  // Escala y redondeo dinámico según el scroll para el efecto ReactBits Expand
-  const scale = 0.88 + scrollProgress * 0.12;
-  const borderRadius = Math.max(0, 24 - scrollProgress * 24);
+  // Interpolación de expansión suave y cinematográfica (protagonista y grande)
+  // En reposo: 92vw de ancho y 80vh de alto (grande, nítido y protagonista)
+  // Al hacer scroll: se expande fluidamente a 100vw y 100vh pantalla completa (Full Runway)
+  const currentWidth = 92 + scrollProgress * 8;
+  const currentHeight = 80 + scrollProgress * 20;
+  const currentRadius = Math.max(0, 24 * (1 - scrollProgress));
+  const currentImgScale = 1.02 + scrollProgress * 0.08;
 
   return (
     <section className="scroll-expand-runway" id="scrollExpandRunway">
@@ -46,9 +50,12 @@ export default function ScrollExpandHero() {
           className="scroll-expand-card"
           id="scrollExpandCard"
           style={{
-            transform: `scale(${scale})`,
-            borderRadius: `${borderRadius}px`,
-            transition: 'transform 0.1s ease-out, border-radius 0.1s ease-out'
+            width: `${currentWidth}vw`,
+            height: `${currentHeight}vh`,
+            maxWidth: scrollProgress > 0.04 ? '100vw' : '1440px',
+            maxHeight: scrollProgress > 0.04 ? '100vh' : '840px',
+            borderRadius: `${currentRadius}px`,
+            transition: 'width 0.1s ease-out, height 0.1s ease-out, border-radius 0.1s ease-out'
           }}
         >
           <img
@@ -56,6 +63,10 @@ export default function ScrollExpandHero() {
             alt="Modelo Afrodescendiente con Rastas - TAGHER'S"
             className="scroll-expand-img"
             id="scrollExpandImg"
+            style={{
+              transform: `scale(${currentImgScale})`,
+              objectPosition: 'center 22%'
+            }}
           />
           <div className="scroll-expand-overlay"></div>
           
