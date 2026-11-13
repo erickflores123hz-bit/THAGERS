@@ -190,17 +190,18 @@ export default function Header() {
             <span className="action-label">ASESOR TALLE</span>
           </button>
 
-          {/* BOTÓN SUPERVISOR */}
-          <button
-            className="action-btn admin-shortcut-btn"
-            id="headerAdminBtn"
-            onClick={() => setIsAdminModalOpen(true)}
-            title="Panel de Supervisión y Base de Datos"
-            style={{ display: isUserAdmin ? 'inline-flex' : 'inline-flex', opacity: isUserAdmin ? 1 : 0.85 }}
-          >
-            <i className="fa-solid fa-chart-line"></i>
-            <span className="action-label admin-label">SUPERVISOR</span>
-          </button>
+          {/* BOTÓN SUPERVISOR (EXCLUSIVO PARA CUENTA ADMINISTRADOR) */}
+          {isUserAdmin && (
+            <button
+              className="action-btn admin-shortcut-btn"
+              id="headerAdminBtn"
+              onClick={() => setIsAdminModalOpen(true)}
+              title="Panel de Supervisión y Base de Datos"
+            >
+              <i className="fa-solid fa-chart-line"></i>
+              <span className="action-label admin-label">SUPERVISOR</span>
+            </button>
+          )}
 
           {/* BOTÓN USUARIO */}
           <div className="user-menu-wrapper">
@@ -249,17 +250,19 @@ export default function Header() {
             <a href="#catalogSection" onClick={(e) => { e.preventDefault(); handleCategoryClick('camisetas'); }}>Camisetas & Polos</a>
             <a href="#catalogSection" onClick={(e) => { e.preventDefault(); handleCategoryClick('sudaderas'); }}>Sudaderas & Camperas</a>
             <a href="#catalogSection" onClick={(e) => { e.preventDefault(); handleCategoryClick('accesorios'); }}>Accesorios (Cadenas, Anillos)</a>
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                setIsAdminModalOpen(true);
-                setMobileMenuOpen(false);
-              }}
-              style={{ color: '#e63946' }}
-            >
-              <i className="fa-solid fa-chart-line"></i> Panel Supervisor (Base de Datos)
-            </a>
+            {isUserAdmin && (
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsAdminModalOpen(true);
+                  setMobileMenuOpen(false);
+                }}
+                style={{ color: '#e63946' }}
+              >
+                <i className="fa-solid fa-chart-line"></i> Panel Supervisor (Base de Datos)
+              </a>
+            )}
             <button
               className="mobile-ar-btn"
               onClick={() => {

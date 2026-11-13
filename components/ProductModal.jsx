@@ -11,7 +11,8 @@ export default function ProductModal() {
     selectedProduct,
     recommendedSize,
     addToCart,
-    openSmartSizerModal
+    openSmartSizerModal,
+    setIsCheckoutModalOpen
   } = useApp();
 
   const [activeImageIdx, setActiveImageIdx] = useState(0);
@@ -45,11 +46,10 @@ export default function ProductModal() {
     setIsProductModalOpen(false);
   };
 
-  const handleBuyWhatsApp = () => {
-    const text = encodeURIComponent(
-      `¡Hola TAGHER'S! Me interesa comprar:\n- Prenda: ${selectedProduct.name}\n- Talle: ${selectedSize}\n- Cantidad: ${qty}\n- Precio: $${formatCurrency(selectedProduct.price * qty)}`
-    );
-    window.open(`https://wa.me/5491123456789?text=${text}`, '_blank');
+  const handleBuyNow = () => {
+    addToCart(selectedProduct, selectedSize, qty);
+    setIsProductModalOpen(false);
+    setIsCheckoutModalOpen(true);
   };
 
   const sizes = selectedProduct.category === 'accesorios' ? ['Única'] : ['S', 'M', 'L', 'XL', 'XXL'];
@@ -172,11 +172,11 @@ export default function ProductModal() {
 
             {/* BOTONES DE ACCIÓN */}
             <div className="detail-actions">
-              <button className="btn btn-primary btn-block" onClick={handleAddToCart}>
-                <i className="fa-solid fa-bag-shopping"></i> AÑADIR AL CARRITO
+              <button className="btn btn-primary btn-block" onClick={handleBuyNow}>
+                <i className="fa-solid fa-bolt"></i> COMPRAR AHORA
               </button>
-              <button className="btn btn-whatsapp btn-block" onClick={handleBuyWhatsApp}>
-                <i className="fa-brands fa-whatsapp"></i> COMPRAR POR WHATSAPP
+              <button className="btn btn-outline btn-block" onClick={handleAddToCart}>
+                <i className="fa-solid fa-bag-shopping"></i> AÑADIR AL CARRITO
               </button>
             </div>
 

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useApp } from '../lib/context';
 
 export default function Footer() {
-  const { setActiveCategory, setIsAdminModalOpen, openSmartSizerModal, showToast } = useApp();
+  const { setActiveCategory, setIsAdminModalOpen, openSmartSizerModal, showToast, user } = useApp();
   const [email, setEmail] = useState('');
 
   const handleNewsletter = (e) => {
@@ -79,16 +79,18 @@ export default function Footer() {
         </div>
 
         <div className="footer-col">
-          <h4>SUPERVISIÓN & SISTEMA</h4>
+          <h4>SISTEMA & AYUDA</h4>
           <ul>
-            <li>
-              <a href="#" onClick={(e) => { e.preventDefault(); setIsAdminModalOpen(true); }}>
-                <i className="fa-solid fa-lock"></i> Panel Administrador (Ventas/Stock)
-              </a>
-            </li>
+            {user?.role === 'admin' && (
+              <li>
+                <a href="#" onClick={(e) => { e.preventDefault(); setIsAdminModalOpen(true); }} style={{ color: '#e63946' }}>
+                  <i className="fa-solid fa-lock"></i> Panel Administrador (Ventas/Stock)
+                </a>
+              </li>
+            )}
             <li>
               <a href="#" onClick={(e) => { e.preventDefault(); openSmartSizerModal(); }}>
-                <i className="fa-solid fa-ruler"></i> Asesor de Talles IA
+                <i className="fa-solid fa-ruler-combined"></i> Asesor de Talles Corte Baggy
               </a>
             </li>
             <li>

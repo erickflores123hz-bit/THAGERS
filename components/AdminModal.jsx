@@ -12,13 +12,45 @@ export default function AdminModal() {
     users,
     orders,
     restockProduct,
-    showToast
+    showToast,
+    user,
+    setIsAuthModalOpen
   } = useApp();
 
   const [activeTab, setActiveTab] = useState('metrics');
   const [dbSubtab, setDbSubtab] = useState('users');
 
   if (!isAdminModalOpen) return null;
+
+  // Control estricto de acceso exclusivo para rol de Administrador
+  if (user?.role !== 'admin') {
+    return (
+      <div className="modal-overlay active" id="adminModal">
+        <div className="modal-card" style={{ maxWidth: '420px', textAlign: 'center', padding: '36px 24px', borderRadius: '16px' }}>
+          <i className="fa-solid fa-shield-halved" style={{ fontSize: '3.2rem', color: '#e63946', marginBottom: '16px' }}></i>
+          <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '8px' }}>ACCESO RESTRINGIDO</h3>
+          <p style={{ color: '#666', fontSize: '0.9rem', lineHeight: '1.5', marginBottom: '24px' }}>
+            Este panel de supervisión y base de datos es de uso exclusivo para cuentas con rol de <b>Administrador</b>.
+          </p>
+          <button
+            className="btn btn-primary btn-block"
+            onClick={() => {
+              setIsAdminModalOpen(false);
+              setIsAuthModalOpen(true);
+            }}
+          >
+            <i className="fa-solid fa-lock"></i> INICIAR SESIÓN COMO ADMIN
+          </button>
+          <button
+            className="btn btn-sm btn-outline btn-block mt-2"
+            onClick={() => setIsAdminModalOpen(false)}
+          >
+            VOLVER A LA TIENDA
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // Cálculos de métricas
   const totalRevenue = orders.reduce((sum, ord) => sum + (ord.total || 0), 0);

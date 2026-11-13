@@ -38,20 +38,6 @@ export default function CartDrawer() {
     setIsCheckoutModalOpen(true);
   };
 
-  const handleWhatsAppCheckout = () => {
-    if (cart.length === 0) return;
-    const itemsList = cart
-      .map((item) => `• ${item.name} (Talle: ${item.size}) x${item.qty} = $${formatCurrency(item.price * item.qty)}`)
-      .join('\n');
-
-    const couponNote = coupon ? `\nCupón Aplicado: ${coupon.code} (-$${formatCurrency(discountAmount)})` : '';
-    const message = encodeURIComponent(
-      `¡Hola TAGHER'S! Quiero confirmar mi pedido:\n\n${itemsList}${couponNote}\n\n*Total a pagar:* $${formatCurrency(total)}\n\n¿Cuáles son los datos de envío y pago?`
-    );
-
-    window.open(`https://wa.me/5491123456789?text=${message}`, '_blank');
-  };
-
   return (
     <>
       <div
@@ -159,11 +145,17 @@ export default function CartDrawer() {
             </div>
 
             <button className="btn btn-primary btn-block checkout-btn" onClick={handleCheckoutModal}>
-              FINALIZAR COMPRA
+              <i className="fa-solid fa-lock"></i> FINALIZAR COMPRA
             </button>
-            <button className="btn btn-whatsapp btn-block" onClick={handleWhatsAppCheckout}>
-              <i className="fa-brands fa-whatsapp"></i> FINALIZAR POR WHATSAPP
-            </button>
+
+            <div className="cart-payment-badges" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', margin: '14px 0 6px', fontSize: '0.8rem', color: '#777' }}>
+              <span><i className="fa-regular fa-credit-card"></i> Tarjetas</span>
+              <span>•</span>
+              <span><i className="fa-solid fa-qrcode"></i> Mercado Pago</span>
+              <span>•</span>
+              <span><i className="fa-solid fa-shield-halved"></i> Pago Seguro</span>
+            </div>
+
             <button
               className="btn btn-sm btn-outline btn-block mt-2"
               onClick={() => setIsCartOpen(false)}
