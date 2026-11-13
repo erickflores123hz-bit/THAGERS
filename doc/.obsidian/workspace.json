@@ -11,14 +11,10 @@
             "id": "6c9e3b2956031fb1",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "05 - IDEAS Y EXPANSION DEL NEGOCIO.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "05 - IDEAS Y EXPANSION DEL NEGOCIO"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Vista gráfica"
             }
           }
         ]
@@ -187,6 +183,8 @@
   },
   "active": "6c9e3b2956031fb1",
   "lastOpenFiles": [
+    "documentaci_n_tienda_antigravity.md",
+    "05 - IDEAS Y EXPANSION DEL NEGOCIO.md",
     "02 - CAMARA E INTELIGENCIA ARTIFICIAL.md",
     "01 - VISION DEL PROYECTO.md",
     "00 - INDICE GENERAL (MOC).md"
