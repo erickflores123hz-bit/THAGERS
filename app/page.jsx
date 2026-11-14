@@ -14,6 +14,7 @@ import CartDrawer from '../components/CartDrawer';
 import CheckoutModal from '../components/CheckoutModal';
 import AdminModal from '../components/AdminModal';
 import AuthModal from '../components/AuthModal';
+import VirtualTryOnModal from '../components/VirtualTryOnModal';
 import ToastContainer from '../components/ToastContainer';
 
 export default function HomePage() {
@@ -44,6 +45,7 @@ export default function HomePage() {
       <CheckoutModal />
       <AdminModal />
       <AuthModal />
+      <VirtualTryOnModal />
       <ToastContainer />
     </div>
   );

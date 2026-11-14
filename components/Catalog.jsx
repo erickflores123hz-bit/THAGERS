@@ -14,6 +14,7 @@ export default function Catalog() {
     sortBy,
     setSortBy,
     openProductModal,
+    openTryOnModal,
     addToCart
   } = useApp();
 
@@ -165,6 +166,22 @@ export default function Catalog() {
                         loading="lazy"
                         className="absolute inset-0 w-full h-full object-cover opacity-0 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:scale-105 pointer-events-none"
                       />
+                    )}
+
+                    {/* BOTÓN PROBARSE CON IA */}
+                    {product.category !== 'accesorios' && (
+                      <motion.button
+                        className="absolute bottom-3 left-3 z-10 px-2.5 py-1 rounded bg-black/80 hover:bg-black text-[10px] tracking-wider uppercase font-semibold text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openTryOnModal(product);
+                        }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        title="Probar esta prenda en tu foto con IA"
+                      >
+                        <i className="fa-solid fa-wand-magic-sparkles"></i> PROBAR CON IA
+                      </motion.button>
                     )}
                   </div>
 

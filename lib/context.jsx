@@ -151,9 +151,12 @@ export function AppProvider({ children }) {
   const [isSmartSizerModalOpen, setIsSmartSizerModalOpen] = useState(false);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [isTryOnModalOpen, setIsTryOnModalOpen] = useState(false);
 
-  // Prenda seleccionada para Modales
+  // Prenda seleccionada para Modales y Probador
   const [selectedProduct, setSelectedProduct] = useState(INITIAL_PRODUCTS[0]);
+  const [tryOnProduct, setTryOnProduct] = useState(INITIAL_PRODUCTS[0]);
+  const [userTryOnPhoto, setUserTryOnPhoto] = useState(null);
   const [recommendedSize, setRecommendedSize] = useState('L');
 
   // Toasts de notificación
@@ -412,6 +415,12 @@ export function AppProvider({ children }) {
     setIsSmartSizerModalOpen(true);
   };
 
+  const openTryOnModal = (product) => {
+    if (product) setTryOnProduct(product);
+    else if (selectedProduct) setTryOnProduct(selectedProduct);
+    setIsTryOnModalOpen(true);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -441,6 +450,12 @@ export function AppProvider({ children }) {
         setIsProductModalOpen,
         isCheckoutModalOpen,
         setIsCheckoutModalOpen,
+        isTryOnModalOpen,
+        setIsTryOnModalOpen,
+        tryOnProduct,
+        setTryOnProduct,
+        userTryOnPhoto,
+        setUserTryOnPhoto,
         selectedProduct,
         setSelectedProduct,
         recommendedSize,
@@ -461,7 +476,8 @@ export function AppProvider({ children }) {
         restockProduct,
         createOrder,
         openProductModal,
-        openSmartSizerModal
+        openSmartSizerModal,
+        openTryOnModal
       }}
     >
       {children}

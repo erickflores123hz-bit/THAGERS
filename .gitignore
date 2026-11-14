@@ -6,3 +6,5 @@ Thumbs.db
 *.log
 .obsidian/workspace*.json
 .env*.local
+.env
+.env.local
