@@ -27,6 +27,8 @@ export default function VirtualTryOnModal() {
   const [cameraError, setCameraError] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [processingMsgIdx, setProcessingMsgIdx] = useState(0);
+  const [isDemoMode, setIsDemoMode] = useState(true);
+  const [isResultDemo, setIsResultDemo] = useState(false);
 
   const videoRef = useRef(null);
   const streamRef = useRef(null);
@@ -57,7 +59,7 @@ export default function VirtualTryOnModal() {
     if (step === 'processing') {
       interval = setInterval(() => {
         setProcessingMsgIdx((prev) => (prev + 1) % processingMessages.length);
-      }, 2400);
+      }, 2000);
     }
     return () => clearInterval(interval);
   }, [step]);
@@ -164,7 +166,8 @@ export default function VirtualTryOnModal() {
         },
         body: JSON.stringify({
           userImage: capturedImage,
-          productId: tryOnProduct.id
+          productId: tryOnProduct.id,
+          forceDemo: isDemoMode
         })
       });
 
@@ -175,10 +178,11 @@ export default function VirtualTryOnModal() {
       }
 
       setResultImage(data.resultUrl);
+      setIsResultDemo(Boolean(data.isDemo));
       setIsComparingOriginal(false);
       setStep('result');
       if (showToast) {
-        showToast('Prueba virtual generada con éxito');
+        showToast(data.isDemo ? 'Demostración generada con éxito' : 'Prueba virtual generada con éxito');
       }
     } catch (err) {
       console.error('Try-on error:', err);
@@ -389,7 +393,7 @@ export default function VirtualTryOnModal() {
                       <span className="text-xs uppercase tracking-widest text-neutral-400 mb-2">
                         PRENDA A PROBAR
                       </span>
-                      <div className="p-4 bg-neutral-900/90 rounded-lg border border-neutral-800 flex gap-4 items-center mb-4">
+                      <div className="p-4 bg-neutral-900/90 rounded-lg border border-neutral-800 flex gap-4 items-center mb-3">
                         <img
                           src={tryOnProduct?.overlayImage || tryOnProduct?.image}
                           alt={tryOnProduct?.name}
@@ -408,11 +412,40 @@ export default function VirtualTryOnModal() {
                         </div>
                       </div>
 
+                      {/* SELECTOR DE MODO (DEMO GRATIS VS REPLICATE) */}
+                      <div className="flex items-center justify-between py-2 px-3 bg-neutral-950 rounded border border-neutral-800 mb-3 text-xs">
+                        <span className="text-neutral-400">Modo de prueba:</span>
+                        <div className="flex gap-1.5">
+                          <button
+                            type="button"
+                            className={`px-2.5 py-1 rounded text-[11px] transition-colors ${
+                              isDemoMode
+                                ? 'bg-neutral-800 text-emerald-400 font-bold border border-emerald-500/30'
+                                : 'text-neutral-500 hover:text-neutral-300'
+                            }`}
+                            onClick={() => setIsDemoMode(true)}
+                          >
+                            Demo (Gratis)
+                          </button>
+                          <button
+                            type="button"
+                            className={`px-2.5 py-1 rounded text-[11px] transition-colors ${
+                              !isDemoMode
+                                ? 'bg-neutral-800 text-white font-bold border border-neutral-700'
+                                : 'text-neutral-500 hover:text-neutral-300'
+                            }`}
+                            onClick={() => setIsDemoMode(false)}
+                          >
+                            IA Real (Replicate)
+                          </button>
+                        </div>
+                      </div>
+
                       {/* SELECTOR RÁPIDO DE OTRA PRENDA */}
                       <label className="text-[11px] text-neutral-400 uppercase tracking-wider mb-2">
                         O prueba otra prenda de la colección:
                       </label>
-                      <div className="flex gap-2 overflow-x-auto pb-2 mb-6">
+                      <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
                         {eligibleGarments.slice(0, 6).map((item) => (
                           <button
                             key={item.id}
@@ -440,10 +473,13 @@ export default function VirtualTryOnModal() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.97 }}
                       >
-                        <i className="fa-solid fa-wand-magic-sparkles mr-2"></i> GENERAR PRUEBA CON IA
+                        <i className="fa-solid fa-wand-magic-sparkles mr-2"></i>{' '}
+                        {isDemoMode ? 'GENERAR DEMOSTRACIÓN GRATIS' : 'GENERAR PRUEBA CON IA'}
                       </motion.button>
                       <span className="text-[11px] text-neutral-500 text-center block mt-2">
-                        Tiempo estimado de procesamiento: 6 a 8 segundos
+                        {isDemoMode
+                          ? 'Modo Demo: Simulación inmediata sin consumo de saldo'
+                          : 'Tiempo estimado de procesamiento: 6 a 8 segundos'}
                       </span>
                     </div>
                   </div>
@@ -525,6 +561,11 @@ export default function VirtualTryOnModal() {
                     {/* DETALLE Y ACCIONES DE COMPRA */}
                     <div className="flex flex-col justify-between h-full py-2">
                       <div>
+                        {isResultDemo && (
+                          <div className="mb-2 px-2.5 py-1 bg-emerald-950/60 border border-emerald-800/60 rounded text-[11px] text-emerald-300 font-mono inline-block">
+                            MODO DEMO • LOOK DE PRUEBA
+                          </div>
+                        )}
                         <span className="text-xs text-emerald-400 uppercase tracking-widest font-mono block mb-1">
                           RESULTADO GENERADO CON ÉXITO
                         </span>
