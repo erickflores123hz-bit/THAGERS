@@ -13,7 +13,6 @@ export default function ProductModal() {
     recommendedSize,
     addToCart,
     openSmartSizerModal,
-    openTryOnModal,
     setIsCheckoutModalOpen
   } = useApp();
 
@@ -223,22 +222,6 @@ export default function ProductModal() {
 
                 {/* BOTONES DE ACCIÓN CON MICRO-INTERACCIONES */}
                 <div className="detail-actions">
-                  {selectedProduct?.category !== 'accesorios' && (
-                    <motion.button
-                      type="button"
-                      className="btn btn-outline btn-block"
-                      style={{ borderColor: '#34d399', color: '#34d399' }}
-                      onClick={() => {
-                        setIsProductModalOpen(false);
-                        openTryOnModal(selectedProduct);
-                      }}
-                      whileHover={{ scale: 1.02, backgroundColor: 'rgba(52, 211, 153, 0.1)' }}
-                      whileTap={{ scale: 0.97 }}
-                    >
-                      <i className="fa-solid fa-wand-magic-sparkles mr-1"></i> PROBAR EN MI CUERPO CON IA
-                    </motion.button>
-                  )}
-
                   <motion.button
                     className="btn btn-primary btn-block"
                     onClick={handleBuyNow}
