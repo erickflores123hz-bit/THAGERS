@@ -143,6 +143,8 @@ export function AppProvider({ children }) {
   const [activeCategory, setActiveCategory] = useState('todos');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('featured');
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [maxPrice, setMaxPrice] = useState(150000);
 
   // Modales
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -151,6 +153,8 @@ export function AppProvider({ children }) {
   const [isSmartSizerModalOpen, setIsSmartSizerModalOpen] = useState(false);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
+  const [trackingOrderCode, setTrackingOrderCode] = useState('TAG-9421');
 
   // Prenda seleccionada para Modales
   const [selectedProduct, setSelectedProduct] = useState(INITIAL_PRODUCTS[0]);
@@ -412,6 +416,49 @@ export function AppProvider({ children }) {
     setIsSmartSizerModalOpen(true);
   };
 
+  const toggleSizeFilter = (size) => {
+    setSelectedSizes((prev) =>
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
+    );
+  };
+
+  const clearAllFilters = () => {
+    setActiveCategory('todos');
+    setSearchQuery('');
+    setSelectedSizes([]);
+    setMaxPrice(150000);
+    setSortBy('featured');
+  };
+
+  const openTrackingModal = (code) => {
+    if (code) setTrackingOrderCode(code);
+    setIsTrackingModalOpen(true);
+  };
+
+  const addProduct = (newProduct) => {
+    const productWithId = {
+      ...newProduct,
+      id: newProduct.id || `custom-${Date.now()}`,
+      unitsSold: 0,
+      stock: parseInt(newProduct.stock, 10) || 5,
+      price: parseInt(newProduct.price, 10) || 45000,
+      badge: newProduct.badge || "TAGHER'S NEW",
+      image: newProduct.image || '/assets/models/hero_afro_model_white.jpg',
+      images: [newProduct.image || '/assets/models/hero_afro_model_white.jpg'],
+      description: newProduct.description || "Prenda de diseño streetwear TAGHER'S Archive 2026."
+    };
+    setProducts((prev) => [productWithId, ...prev]);
+    showToast(`Prenda "${productWithId.name}" dada de alta en el catálogo`);
+    return productWithId;
+  };
+
+  const updateOrderStatus = (orderId, newStatus) => {
+    setOrders((prev) =>
+      prev.map((ord) => (ord.id === orderId ? { ...ord, status: newStatus } : ord))
+    );
+    showToast(`Pedido #${orderId} actualizado a: ${newStatus}`);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -429,6 +476,12 @@ export function AppProvider({ children }) {
         setSearchQuery,
         sortBy,
         setSortBy,
+        selectedSizes,
+        setSelectedSizes,
+        maxPrice,
+        setMaxPrice,
+        toggleSizeFilter,
+        clearAllFilters,
         isCartOpen,
         setIsCartOpen,
         isAuthModalOpen,
@@ -441,6 +494,13 @@ export function AppProvider({ children }) {
         setIsProductModalOpen,
         isCheckoutModalOpen,
         setIsCheckoutModalOpen,
+        isTrackingModalOpen,
+        setIsTrackingModalOpen,
+        trackingOrderCode,
+        setTrackingOrderCode,
+        openTrackingModal,
+        addProduct,
+        updateOrderStatus,
         selectedProduct,
         setSelectedProduct,
         recommendedSize,

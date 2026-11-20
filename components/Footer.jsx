@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useApp } from '../lib/context';
 
 export default function Footer() {
-  const { setActiveCategory, setIsAdminModalOpen, openSmartSizerModal, showToast, user } = useApp();
+  const { setActiveCategory, setIsAdminModalOpen, openSmartSizerModal, openTrackingModal, showToast, user } = useApp();
   const [email, setEmail] = useState('');
 
   const handleNewsletter = (e) => {
@@ -89,6 +89,11 @@ export default function Footer() {
               </li>
             )}
             <li>
+              <a href="#" onClick={(e) => { e.preventDefault(); openTrackingModal(); }} style={{ color: '#10b981', fontWeight: 600 }}>
+                <i className="fa-solid fa-truck-fast"></i> Rastreo de Envíos en Vivo (GPS)
+              </a>
+            </li>
+            <li>
               <a href="#" onClick={(e) => { e.preventDefault(); openSmartSizerModal(); }}>
                 <i className="fa-solid fa-ruler-combined"></i> Asesor de Talles Corte Baggy
               </a>
@@ -120,6 +125,145 @@ export default function Footer() {
             />
             <button type="submit">UNIRSE</button>
           </form>
+        </div>
+      </div>
+
+      {/* MEDIOS DE PAGO Y CONFIANZA EN ARGENTINA */}
+      <div style={{
+        maxWidth: '1280px',
+        margin: '36px auto 0',
+        padding: '24px 20px',
+        borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '20px'
+      }}>
+        {/* LADO IZQUIERDO: MEDIOS DE PAGO */}
+        <div>
+          <span style={{
+            fontSize: '0.72rem',
+            letterSpacing: '1.5px',
+            textTransform: 'uppercase',
+            color: '#a3a3a3',
+            fontWeight: 700,
+            display: 'block',
+            marginBottom: '10px'
+          }}>
+            <i className="fa-solid fa-credit-card" style={{ marginRight: '6px', color: '#10b981' }}></i>
+            MEDIOS DE PAGO ACEPTADOS EN ARGENTINA
+          </span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
+            {/* MERCADO PAGO */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              backgroundColor: '#009EE3',
+              color: '#fff',
+              padding: '6px 12px',
+              borderRadius: '6px',
+              fontSize: '0.75rem',
+              fontWeight: 800,
+              letterSpacing: '0.5px'
+            }}>
+              <i className="fa-solid fa-handshake"></i>
+              <span>MERCADO PAGO</span>
+            </div>
+
+            {/* TARJETAS */}
+            {[
+              { name: 'Visa', icon: 'fa-brands fa-cc-visa' },
+              { name: 'Mastercard', icon: 'fa-brands fa-cc-mastercard' },
+              { name: 'Amex', icon: 'fa-brands fa-cc-amex' },
+              { name: 'Naranja X', text: 'NARANJA X' },
+              { name: 'Cabal', text: 'CABAL' }
+            ].map((card, idx) => (
+              <div
+                key={idx}
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                  color: '#e5e5e5',
+                  padding: '6px 10px',
+                  borderRadius: '6px',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px'
+                }}
+              >
+                {card.icon ? <i className={card.icon} style={{ fontSize: '0.95rem' }}></i> : null}
+                <span>{card.text || card.name}</span>
+              </div>
+            ))}
+
+            {/* TRANSFERENCIA */}
+            <div style={{
+              backgroundColor: 'rgba(16, 185, 129, 0.12)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              color: '#34d399',
+              padding: '6px 10px',
+              borderRadius: '6px',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}>
+              <i className="fa-solid fa-building-columns"></i>
+              <span>TRANSFERENCIA (10% OFF)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* LADO DERECHO: BENEFICIOS Y SEGURIDAD */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            color: '#e5e5e5',
+            fontSize: '0.8rem',
+            fontWeight: 700
+          }}>
+            <span style={{
+              backgroundColor: '#e2c044',
+              color: '#000',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontWeight: 900,
+              fontSize: '0.7rem'
+            }}>
+              3 Y 6 CUOTAS
+            </span>
+            <span>Sin Interés</span>
+          </div>
+
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            color: '#a3a3a3',
+            fontSize: '0.78rem'
+          }}>
+            <i className="fa-solid fa-shield-halved" style={{ color: '#10b981' }}></i>
+            <span>Compra 100% Segura • SSL 256-Bit</span>
+          </div>
+
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            color: '#a3a3a3',
+            fontSize: '0.78rem'
+          }}>
+            <i className="fa-solid fa-truck" style={{ color: '#60a5fa' }}></i>
+            <span>Envíos a todo el país</span>
+          </div>
         </div>
       </div>
 

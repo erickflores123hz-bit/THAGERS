@@ -14,7 +14,12 @@ export default function Catalog() {
     sortBy,
     setSortBy,
     openProductModal,
-    addToCart
+    addToCart,
+    selectedSizes,
+    toggleSizeFilter,
+    maxPrice,
+    setMaxPrice,
+    clearAllFilters
   } = useApp();
 
   // Categorías y títulos
@@ -53,6 +58,16 @@ export default function Catalog() {
     if (p.subCategory === activeCategory) return true;
     return false;
   });
+
+  // Filtrado por precio máximo
+  if (maxPrice && maxPrice < 150000) {
+    filtered = filtered.filter((p) => p.price <= maxPrice);
+  }
+
+  // Filtrado por talles seleccionados
+  if (selectedSizes && selectedSizes.length > 0) {
+    filtered = filtered.filter((p) => p.sizes && p.sizes.some((sz) => selectedSizes.includes(sz)));
+  }
 
   // Búsqueda
   if (searchQuery.trim()) {
@@ -115,6 +130,100 @@ export default function Catalog() {
               <option value="newest">Más Vendidos / Nuevos</option>
             </select>
           </div>
+        </div>
+
+        {/* BARRA DE FILTROS AVANZADOS (TALLES & RANGO DE PRECIO) */}
+        <div style={{
+          marginTop: '16px',
+          padding: '14px 18px',
+          backgroundColor: '#0d0d0d',
+          border: '1px solid #222',
+          borderRadius: '12px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '16px'
+        }}>
+          {/* FILTRO POR TALLE */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '1px', color: '#888', textTransform: 'uppercase' }}>
+              <i className="fa-solid fa-ruler-horizontal" style={{ marginRight: '5px' }}></i> TALLE:
+            </span>
+            <div style={{ display: 'flex', gap: '6px' }}>
+              {['S', 'M', 'L', 'XL', 'XXL'].map((size) => {
+                const isSelected = selectedSizes.includes(size);
+                return (
+                  <button
+                    key={size}
+                    type="button"
+                    onClick={() => toggleSizeFilter(size)}
+                    style={{
+                      padding: '5px 12px',
+                      borderRadius: '6px',
+                      fontSize: '0.78rem',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      border: isSelected ? '1px solid #e2c044' : '1px solid #333',
+                      backgroundColor: isSelected ? '#e2c044' : '#161616',
+                      color: isSelected ? '#000' : '#ddd'
+                    }}
+                  >
+                    {size}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* FILTRO POR PRECIO MÁXIMO */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '1px', color: '#888', textTransform: 'uppercase' }}>
+              PRECIO MÁX:
+            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <input
+                type="range"
+                min="20000"
+                max="150000"
+                step="5000"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                style={{
+                  width: '120px',
+                  accentColor: '#e2c044',
+                  cursor: 'pointer'
+                }}
+              />
+              <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#e2c044', minWidth: '85px' }}>
+                ${formatCurrency(maxPrice)}
+              </span>
+            </div>
+          </div>
+
+          {/* RESET DE FILTROS SI ESTÁN ACTIVOS */}
+          {(selectedSizes.length > 0 || maxPrice < 150000) && (
+            <button
+              type="button"
+              onClick={clearAllFilters}
+              style={{
+                background: 'transparent',
+                border: '1px solid rgba(239, 68, 68, 0.4)',
+                color: '#ef4444',
+                padding: '5px 12px',
+                borderRadius: '6px',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <i className="fa-solid fa-xmark"></i> Limpiar filtros
+            </button>
+          )}
         </div>
       </div>
 

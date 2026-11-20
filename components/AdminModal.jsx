@@ -15,11 +15,49 @@ export default function AdminModal() {
     restockProduct,
     showToast,
     user,
-    setIsAuthModalOpen
+    setIsAuthModalOpen,
+    addProduct,
+    updateOrderStatus
   } = useApp();
 
   const [activeTab, setActiveTab] = useState('metrics');
   const [dbSubtab, setDbSubtab] = useState('users');
+
+  // Formulario de Nueva Prenda
+  const [newProductName, setNewProductName] = useState('');
+  const [newProductCategory, setNewProductCategory] = useState('sudaderas');
+  const [newProductPrice, setNewProductPrice] = useState('48000');
+  const [newProductStock, setNewProductStock] = useState('20');
+  const [newProductBadge, setNewProductBadge] = useState('DROP 2026');
+  const [newProductImage, setNewProductImage] = useState('/assets/models/afro_model_red_hoodie.jpg');
+  const [newProductDesc, setNewProductDesc] = useState('');
+  const [newProductSizes, setNewProductSizes] = useState(['M', 'L', 'XL']);
+
+  const toggleNewProductSize = (sz) => {
+    setNewProductSizes((prev) =>
+      prev.includes(sz) ? prev.filter((s) => s !== sz) : [...prev, sz]
+    );
+  };
+
+  const handleCreateProduct = (e) => {
+    e.preventDefault();
+    if (!newProductName.trim()) return;
+
+    addProduct({
+      name: newProductName.trim(),
+      category: newProductCategory,
+      price: parseInt(newProductPrice, 10) || 45000,
+      stock: parseInt(newProductStock, 10) || 15,
+      badge: newProductBadge.trim() || undefined,
+      image: newProductImage.trim() || '/assets/models/afro_model_red_hoodie.jpg',
+      description: newProductDesc.trim() || "Prenda de diseño streetwear TAGHER'S Archive 2026.",
+      sizes: newProductSizes.length > 0 ? newProductSizes : ['S', 'M', 'L', 'XL']
+    });
+
+    setNewProductName('');
+    setNewProductDesc('');
+    setActiveTab('stock');
+  };
 
   if (!isAdminModalOpen) return null;
 
@@ -222,6 +260,13 @@ CREATE TABLE IF NOT EXISTS orders (
             onClick={() => setActiveTab('orders')}
           >
             <i className="fa-solid fa-cart-flatbed"></i> Pedidos Recibidos ({orders.length})
+          </button>
+          <button
+            className={`admin-tab ${activeTab === 'new-product' ? 'active' : ''}`}
+            onClick={() => setActiveTab('new-product')}
+            style={{ color: '#10b981', fontWeight: 800 }}
+          >
+            <i className="fa-solid fa-plus-circle"></i> + Nueva Prenda
           </button>
           <button
             className={`admin-tab ${activeTab === 'database' ? 'active' : ''}`}
@@ -468,7 +513,32 @@ CREATE TABLE IF NOT EXISTS orders (
                         <td><b>${formatCurrency(ord.total)}</b></td>
                         <td>{ord.paymentMethod}</td>
                         <td>
-                          <span className="badge-status">{ord.status}</span>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                            <select
+                              value={ord.status || 'En preparación'}
+                              onChange={(e) => updateOrderStatus(ord.id, e.target.value)}
+                              style={{
+                                padding: '6px 10px',
+                                borderRadius: '6px',
+                                border: '1px solid #444',
+                                backgroundColor: '#141416',
+                                color: ord.status === 'En reparto' ? '#10b981' : ord.status === 'Entregado' ? '#60a5fa' : '#f59e0b',
+                                fontWeight: 800,
+                                fontSize: '0.78rem',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              <option value="Pago Aprobado">Pago Aprobado</option>
+                              <option value="En preparación">En preparación</option>
+                              <option value="En reparto">En reparto (Camión en Ruta)</option>
+                              <option value="Entregado">Entregado</option>
+                            </select>
+                            {ord.status === 'En reparto' && (
+                              <span style={{ fontSize: '0.7rem', color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <i className="fa-solid fa-truck-fast"></i> Camión activo en mapa GPS
+                              </span>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -478,7 +548,222 @@ CREATE TABLE IF NOT EXISTS orders (
             </div>
           )}
 
-          {/* VISTA 6: EXPLORADOR DE BASE DE DATOS */}
+          {/* VISTA 6: ALTA DE NUEVA PRENDA (CRUD) */}
+          {activeTab === 'new-product' && (
+            <div className="admin-view active">
+              <div className="stock-alerts-header">
+                <h4>
+                  <i className="fa-solid fa-plus-circle text-primary"></i> Publicar Nueva Prenda en el Catálogo
+                </h4>
+                <p>Crea un nuevo artículo con stock, talle, categoría e imagen para que aparezca instantáneamente en la tienda.</p>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '24px', alignItems: 'start' }}>
+                <form onSubmit={handleCreateProduct} style={{ backgroundColor: '#141416', padding: '20px', borderRadius: '12px', border: '1px solid #27272a' }}>
+                  <div className="form-group" style={{ marginBottom: '14px' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 800 }}>Nombre del Producto</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Ej: Sudadera Zip Y2K Dark Metal"
+                      value={newProductName}
+                      onChange={(e) => setNewProductName(e.target.value)}
+                      style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#0d0d0e', color: '#fff' }}
+                    />
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px' }}>
+                    <div className="form-group">
+                      <label style={{ fontSize: '0.8rem', fontWeight: 800 }}>Categoría</label>
+                      <select
+                        value={newProductCategory}
+                        onChange={(e) => setNewProductCategory(e.target.value)}
+                        style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#0d0d0e', color: '#fff' }}
+                      >
+                        <option value="vaqueros">Vaqueros Baggy</option>
+                        <option value="camisetas">Camisetas & Polos</option>
+                        <option value="sudaderas">Sudaderas & Hoodies</option>
+                        <option value="chandals">Chándals & Track</option>
+                        <option value="accesorios">Accesorios & Cadenas</option>
+                        <option value="cinturones">Cinturones Punk</option>
+                      </select>
+                    </div>
+
+                    <div className="form-group">
+                      <label style={{ fontSize: '0.8rem', fontWeight: 800 }}>Etiqueta / Badge</label>
+                      <input
+                        type="text"
+                        placeholder="Ej: DROP 2026, EXCLUSIVO"
+                        value={newProductBadge}
+                        onChange={(e) => setNewProductBadge(e.target.value)}
+                        style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#0d0d0e', color: '#fff' }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px' }}>
+                    <div className="form-group">
+                      <label style={{ fontSize: '0.8rem', fontWeight: 800 }}>Precio (ARS)</label>
+                      <input
+                        type="number"
+                        required
+                        min="1000"
+                        placeholder="48000"
+                        value={newProductPrice}
+                        onChange={(e) => setNewProductPrice(e.target.value)}
+                        style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#0d0d0e', color: '#fff' }}
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label style={{ fontSize: '0.8rem', fontWeight: 800 }}>Stock Inicial (Unidades)</label>
+                      <input
+                        type="number"
+                        required
+                        min="1"
+                        placeholder="20"
+                        value={newProductStock}
+                        onChange={(e) => setNewProductStock(e.target.value)}
+                        style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#0d0d0e', color: '#fff' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* SELECCIÓN DE TALLES */}
+                  <div className="form-group" style={{ marginBottom: '14px' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 800, display: 'block', marginBottom: '6px' }}>Talles Disponibles:</label>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      {['S', 'M', 'L', 'XL', 'XXL'].map((sz) => {
+                        const checked = newProductSizes.includes(sz);
+                        return (
+                          <button
+                            key={sz}
+                            type="button"
+                            onClick={() => toggleNewProductSize(sz)}
+                            style={{
+                              padding: '6px 14px',
+                              borderRadius: '6px',
+                              fontSize: '0.8rem',
+                              fontWeight: 800,
+                              cursor: 'pointer',
+                              border: checked ? '1px solid #10b981' : '1px solid #333',
+                              backgroundColor: checked ? 'rgba(16, 185, 129, 0.15)' : '#0d0d0e',
+                              color: checked ? '#10b981' : '#888'
+                            }}
+                          >
+                            {sz}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* IMAGEN DEL PRODUCTO */}
+                  <div className="form-group" style={{ marginBottom: '14px' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 800 }}>URL de Imagen</label>
+                    <input
+                      type="text"
+                      required
+                      value={newProductImage}
+                      onChange={(e) => setNewProductImage(e.target.value)}
+                      placeholder="/assets/models/afro_model_red_hoodie.jpg"
+                      style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#0d0d0e', color: '#fff', fontSize: '0.85rem' }}
+                    />
+                    {/* Botones de sugerencias rápidas */}
+                    <div style={{ display: 'flex', gap: '6px', marginTop: '6px', flexWrap: 'wrap' }}>
+                      <button
+                        type="button"
+                        onClick={() => setNewProductImage('/assets/models/afro_model_red_hoodie.jpg')}
+                        style={{ padding: '3px 8px', fontSize: '0.72rem', backgroundColor: '#222', color: '#bbb', borderRadius: '4px', border: 'none', cursor: 'pointer' }}
+                      >
+                        Hoodie Rojo
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setNewProductImage('/assets/models/afro_model_retro_track.jpg')}
+                        style={{ padding: '3px 8px', fontSize: '0.72rem', backgroundColor: '#222', color: '#bbb', borderRadius: '4px', border: 'none', cursor: 'pointer' }}
+                      >
+                        Track Jacket
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setNewProductImage('/assets/models/afro_model_ecko_affliction.jpg')}
+                        style={{ padding: '3px 8px', fontSize: '0.72rem', backgroundColor: '#222', color: '#bbb', borderRadius: '4px', border: 'none', cursor: 'pointer' }}
+                      >
+                        Vaquero Southpole
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: '18px' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 800 }}>Descripción / Detalles</label>
+                    <textarea
+                      rows={2}
+                      value={newProductDesc}
+                      onChange={(e) => setNewProductDesc(e.target.value)}
+                      placeholder="Confeccionado en algodón pesado de 400 GSM con lavado ácido y calce oversize."
+                      style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#0d0d0e', color: '#fff', resize: 'vertical' }}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-block"
+                    style={{ padding: '12px', fontSize: '0.9rem', fontWeight: 800, background: '#10b981', color: '#000' }}
+                  >
+                    <i className="fa-solid fa-plus-circle"></i> PUBLICAR PRENDA EN CATÁLOGO
+                  </button>
+                </form>
+
+                {/* PREVIEW DE LA TARJETA */}
+                <div style={{ backgroundColor: '#141416', padding: '16px', borderRadius: '12px', border: '1px solid #27272a' }}>
+                  <span style={{ fontSize: '0.72rem', color: '#888', fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase', display: 'block', marginBottom: '12px' }}>
+                    <i className="fa-solid fa-eye"></i> VISTA PREVIA EN TIENDA
+                  </span>
+                  <div style={{ backgroundColor: '#09090b', borderRadius: '8px', overflow: 'hidden', border: '1px solid #222' }}>
+                    <div style={{ height: '220px', overflow: 'hidden', position: 'relative', backgroundColor: '#18181b' }}>
+                      {newProductBadge && (
+                        <span style={{ position: 'absolute', top: '10px', left: '10px', backgroundColor: '#e2c044', color: '#000', fontSize: '0.68rem', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', zIndex: 2 }}>
+                          {newProductBadge}
+                        </span>
+                      )}
+                      <img
+                        src={newProductImage || '/assets/models/afro_model_red_hoodie.jpg'}
+                        alt="Preview"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        onError={(e) => { e.currentTarget.src = '/assets/models/afro_model_red_hoodie.jpg'; }}
+                      />
+                    </div>
+                    <div style={{ padding: '12px' }}>
+                      <span style={{ fontSize: '0.7rem', color: '#a1a1aa', textTransform: 'uppercase', fontWeight: 700 }}>
+                        {newProductCategory}
+                      </span>
+                      <h5 style={{ fontSize: '0.95rem', fontWeight: 800, margin: '4px 0 8px', color: '#fff' }}>
+                        {newProductName || 'Nombre de la Prenda'}
+                      </h5>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#e2c044' }}>
+                          ${formatCurrency(parseInt(newProductPrice, 10) || 48000)}
+                        </span>
+                        <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 700 }}>
+                          Stock: {newProductStock || 20} un.
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', gap: '4px', marginTop: '8px' }}>
+                        {newProductSizes.map((s) => (
+                          <span key={s} style={{ fontSize: '0.65rem', padding: '2px 6px', backgroundColor: '#222', borderRadius: '3px', color: '#bbb' }}>
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* VISTA 7: EXPLORADOR DE BASE DE DATOS */}
           {activeTab === 'database' && (
             <div className="admin-view active">
               <div className="db-viewer-header">

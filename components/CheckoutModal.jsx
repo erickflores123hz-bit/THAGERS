@@ -13,7 +13,8 @@ export default function CheckoutModal() {
     cart,
     coupon,
     createOrder,
-    user
+    user,
+    openTrackingModal
   } = useApp();
 
   const [name, setName] = useState(user ? user.name : '');
@@ -519,7 +520,28 @@ export default function CheckoutModal() {
             <p className="ticket-note">
               Recibirás el código de seguimiento de correo en tu email. Entrega estimada: 3 a 5 días hábiles.
             </p>
-            <button className="btn btn-primary btn-block" onClick={handleFinish}>
+            <button
+              className="btn btn-primary btn-block"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px',
+                background: '#10b981',
+                color: '#000',
+                fontWeight: 800,
+                marginBottom: '10px'
+              }}
+              onClick={() => {
+                const orderId = createdOrder.id;
+                setIsCheckoutModalOpen(false);
+                setCreatedOrder(null);
+                openTrackingModal(orderId);
+              }}
+            >
+              <i className="fa-solid fa-truck-fast"></i> RASTREAR MI PEDIDO EN EL MAPA
+            </button>
+            <button className="btn btn-outline btn-block" onClick={handleFinish}>
               VOLVER A LA TIENDA
             </button>
           </div>
