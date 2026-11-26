@@ -4,6 +4,11 @@ import { AppProvider } from '../lib/context';
 export const metadata = {
   title: "TAGHER'S | Streetwear & Baggy Apparel",
   description: "Tienda online de ropa streetwear TAGHER'S inspirada en Figma con catálogo interactivo, asesor de talles y sistema de usuarios",
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({ children }) {

@@ -53,7 +53,9 @@ export default function ProductModal() {
     setIsCheckoutModalOpen(true);
   };
 
-  const sizes = selectedProduct?.category === 'accesorios' ? ['Única'] : ['S', 'M', 'L', 'XL', 'XXL'];
+  const sizes = selectedProduct?.sizes && selectedProduct.sizes.length > 0
+    ? selectedProduct.sizes
+    : selectedProduct?.category === 'accesorios' ? ['Única'] : ['S', 'M', 'L', 'XL', 'XXL'];
 
   return (
     <AnimatePresence>
@@ -170,6 +172,18 @@ export default function ProductModal() {
                   {selectedProduct.oldPrice && (
                     <span className="price-old">${formatCurrency(selectedProduct.oldPrice)}</span>
                   )}
+                </div>
+
+                {/* DETALLE ESPECÍFICO DE FINANCIACIÓN Y MEDIOS DE PAGO */}
+                <div style={{ backgroundColor: '#141416', padding: '10px 14px', borderRadius: '8px', border: '1px solid #27272a', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <span style={{ fontSize: '0.8rem', color: '#e2c044', fontWeight: 700 }}>
+                    <i className="fa-solid fa-credit-card" style={{ marginRight: '6px' }}></i>
+                    Hasta <b>3 cuotas fijas sin interés</b> de <b>${formatCurrency(Math.round(selectedProduct.price / 3))}</b>
+                  </span>
+                  <span style={{ fontSize: '0.78rem', color: '#34d399', fontWeight: 600 }}>
+                    <i className="fa-solid fa-building-columns" style={{ marginRight: '6px' }}></i>
+                    <b>${formatCurrency(Math.round(selectedProduct.price * 0.9))}</b> abonando por Transferencia (10% OFF)
+                  </span>
                 </div>
 
                 <p className="product-desc">{selectedProduct.description}</p>

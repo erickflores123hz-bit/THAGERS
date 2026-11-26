@@ -59,16 +59,6 @@ export default function Catalog() {
     return false;
   });
 
-  // Filtrado por precio máximo
-  if (maxPrice && maxPrice < 150000) {
-    filtered = filtered.filter((p) => p.price <= maxPrice);
-  }
-
-  // Filtrado por talles seleccionados
-  if (selectedSizes && selectedSizes.length > 0) {
-    filtered = filtered.filter((p) => p.sizes && p.sizes.some((sz) => selectedSizes.includes(sz)));
-  }
-
   // Búsqueda
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase();
@@ -131,100 +121,6 @@ export default function Catalog() {
             </select>
           </div>
         </div>
-
-        {/* BARRA DE FILTROS AVANZADOS (TALLES & RANGO DE PRECIO) */}
-        <div style={{
-          marginTop: '16px',
-          padding: '14px 18px',
-          backgroundColor: '#0d0d0d',
-          border: '1px solid #222',
-          borderRadius: '12px',
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '16px'
-        }}>
-          {/* FILTRO POR TALLE */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '1px', color: '#888', textTransform: 'uppercase' }}>
-              <i className="fa-solid fa-ruler-horizontal" style={{ marginRight: '5px' }}></i> TALLE:
-            </span>
-            <div style={{ display: 'flex', gap: '6px' }}>
-              {['S', 'M', 'L', 'XL', 'XXL'].map((size) => {
-                const isSelected = selectedSizes.includes(size);
-                return (
-                  <button
-                    key={size}
-                    type="button"
-                    onClick={() => toggleSizeFilter(size)}
-                    style={{
-                      padding: '5px 12px',
-                      borderRadius: '6px',
-                      fontSize: '0.78rem',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease',
-                      border: isSelected ? '1px solid #e2c044' : '1px solid #333',
-                      backgroundColor: isSelected ? '#e2c044' : '#161616',
-                      color: isSelected ? '#000' : '#ddd'
-                    }}
-                  >
-                    {size}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* FILTRO POR PRECIO MÁXIMO */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '1px', color: '#888', textTransform: 'uppercase' }}>
-              PRECIO MÁX:
-            </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <input
-                type="range"
-                min="20000"
-                max="150000"
-                step="5000"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(Number(e.target.value))}
-                style={{
-                  width: '120px',
-                  accentColor: '#e2c044',
-                  cursor: 'pointer'
-                }}
-              />
-              <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#e2c044', minWidth: '85px' }}>
-                ${formatCurrency(maxPrice)}
-              </span>
-            </div>
-          </div>
-
-          {/* RESET DE FILTROS SI ESTÁN ACTIVOS */}
-          {(selectedSizes.length > 0 || maxPrice < 150000) && (
-            <button
-              type="button"
-              onClick={clearAllFilters}
-              style={{
-                background: 'transparent',
-                border: '1px solid rgba(239, 68, 68, 0.4)',
-                color: '#ef4444',
-                padding: '5px 12px',
-                borderRadius: '6px',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-            >
-              <i className="fa-solid fa-xmark"></i> Limpiar filtros
-            </button>
-          )}
-        </div>
       </div>
 
       {/* GRILLA DE PRODUCTOS CON REORDENAMIENTO FLUIDO (LAYOUT ANIMATION) */}
@@ -278,6 +174,7 @@ export default function Catalog() {
                   </div>
 
                   <div className="product-card-body">
+                    {/* STOCK Y ORIGEN */}
                     <div className="product-brand-line">
                       <span>TAGHER'S ARCHIVE</span>
                       {isLowStock ? (
@@ -287,18 +184,67 @@ export default function Catalog() {
                       )}
                     </div>
 
+                    {/* TALLES DISPONIBLES DE LA PRENDA */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px', margin: '6px 0 8px', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#a1a1aa', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        Talles:
+                      </span>
+                      {(product.sizes || (product.category === 'accesorios' ? ['Único'] : ['S', 'M', 'L', 'XL'])).map((sz) => (
+                        <span
+                          key={sz}
+                          style={{
+                            fontSize: '0.68rem',
+                            fontWeight: 800,
+                            padding: '2px 6px',
+                            borderRadius: '4px',
+                            backgroundColor: '#18181b',
+                            border: '1px solid #333',
+                            color: '#f4f4f5'
+                          }}
+                        >
+                          {sz}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* NOMBRE CONCISO DE LA PRENDA */}
                     <h3
-                      className="product-card-title cursor-pointer transition-colors duration-200 hover:text-black"
+                      className="product-card-title cursor-pointer transition-colors duration-200 hover:text-white"
                       onClick={() => openProductModal(product)}
+                      style={{ fontSize: '1rem', fontWeight: 800, margin: '2px 0 8px', lineHeight: 1.3 }}
                     >
                       {product.name}
                     </h3>
 
-                    <div className="product-card-price">
-                      <span className="price-now">${formatCurrency(product.price)}</span>
-                      {product.oldPrice && (
-                        <span className="price-was">${formatCurrency(product.oldPrice)}</span>
-                      )}
+                    {/* PRECIOS ESPECÍFICOS Y FORMAS DE PAGO */}
+                    <div style={{ margin: '8px 0 14px' }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#fff' }}>
+                          ${formatCurrency(product.price)}
+                        </span>
+                        {product.oldPrice && (
+                          <>
+                            <span style={{ fontSize: '0.85rem', color: '#71717a', textDecoration: 'line-through' }}>
+                              ${formatCurrency(product.oldPrice)}
+                            </span>
+                            <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.12)', padding: '2px 6px', borderRadius: '4px' }}>
+                              {Math.round((1 - product.price / product.oldPrice) * 100)}% OFF
+                            </span>
+                          </>
+                        )}
+                      </div>
+
+                      {/* CONDICIONES DE PAGO ESPECÍFICAS */}
+                      <div style={{ marginTop: '5px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <span style={{ fontSize: '0.74rem', color: '#e2c044', fontWeight: 700 }}>
+                          <i className="fa-solid fa-credit-card" style={{ marginRight: '5px', fontSize: '0.68rem' }}></i>
+                          3 cuotas fijas de <b>${formatCurrency(Math.round(product.price / 3))}</b> sin interés
+                        </span>
+                        <span style={{ fontSize: '0.72rem', color: '#34d399', fontWeight: 600 }}>
+                          <i className="fa-solid fa-building-columns" style={{ marginRight: '5px', fontSize: '0.68rem' }}></i>
+                          <b>${formatCurrency(Math.round(product.price * 0.9))}</b> abonando por transferencia
+                        </span>
+                      </div>
                     </div>
 
                     <div className="product-card-actions">
