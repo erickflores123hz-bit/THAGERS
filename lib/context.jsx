@@ -138,6 +138,8 @@ export function AppProvider({ children }) {
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
   const [trackingOrderCode, setTrackingOrderCode] = useState('TAG-9421');
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
+  const [receiptOrder, setReceiptOrder] = useState(null);
 
   // Prenda seleccionada para Modales
   const [selectedProduct, setSelectedProduct] = useState(INITIAL_PRODUCTS[0]);
@@ -445,6 +447,34 @@ export function AppProvider({ children }) {
     showToast(`Pedido #${orderId} actualizado a: ${newStatus}`);
   };
 
+  const openReceiptModal = (order) => {
+    if (order) {
+      setReceiptOrder(order);
+    } else {
+      setReceiptOrder(orders[0] || null);
+    }
+    setIsReceiptModalOpen(true);
+  };
+
+  const addOutfitBundle = (item1, item2, discountPercent = 15) => {
+    if (!item1 || !item2) return;
+    const discountedPrice1 = Math.round(item1.price * (1 - discountPercent / 100));
+    const discountedPrice2 = Math.round(item2.price * (1 - discountPercent / 100));
+
+    addToCart(
+      { ...item1, price: discountedPrice1, name: `${item1.name} (Bundle)` },
+      item1.sizes && item1.sizes.length > 0 ? item1.sizes[0] : 'L',
+      1
+    );
+    addToCart(
+      { ...item2, price: discountedPrice2, name: `${item2.name} (Bundle)` },
+      item2.sizes && item2.sizes.length > 0 ? item2.sizes[0] : 'L',
+      1
+    );
+    showToast(`¡Outfit completo añadido con ${discountPercent}% OFF!`, 'success');
+    setIsCartOpen(true);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -485,6 +515,11 @@ export function AppProvider({ children }) {
         trackingOrderCode,
         setTrackingOrderCode,
         openTrackingModal,
+        isReceiptModalOpen,
+        setIsReceiptModalOpen,
+        receiptOrder,
+        openReceiptModal,
+        addOutfitBundle,
         addProduct,
         updateOrderStatus,
         selectedProduct,

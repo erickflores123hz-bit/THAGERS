@@ -14,7 +14,8 @@ export default function CheckoutModal() {
     coupon,
     createOrder,
     user,
-    openTrackingModal
+    openTrackingModal,
+    openReceiptModal
   } = useApp();
 
   const [name, setName] = useState(user ? user.name : '');
@@ -533,6 +534,22 @@ export default function CheckoutModal() {
             <p className="ticket-note">
               Recibirás el código de seguimiento de correo en tu email. Entrega estimada: 3 a 5 días hábiles.
             </p>
+            <button
+              className="btn btn-outline btn-block"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                borderColor: '#e2c044',
+                color: '#e2c044',
+                fontWeight: 800,
+                marginBottom: '10px'
+              }}
+              onClick={() => openReceiptModal(createdOrder)}
+            >
+              <i className="fa-solid fa-receipt"></i> DESCARGAR TICKET / COMPROBANTE OFICIAL
+            </button>
             <button
               className="btn btn-primary btn-block"
               style={{

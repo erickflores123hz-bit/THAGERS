@@ -15,10 +15,17 @@ export default function CartDrawer() {
     coupon,
     applyCouponCode,
     removeCouponCode,
-    setIsCheckoutModalOpen
+    setIsCheckoutModalOpen,
+    products,
+    addToCart
   } = useApp();
 
   const [couponInputText, setCouponInputText] = useState('');
+
+  const recommendedForCart = React.useMemo(() => {
+    if (!products || products.length === 0) return null;
+    return products.find((p) => !cart.some((c) => c.id === p.id)) || products[0];
+  }, [products, cart]);
 
   const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
@@ -164,6 +171,49 @@ export default function CartDrawer() {
             {/* FOOTER DEL CARRITO */}
             {cart.length > 0 && (
               <div className="cart-footer">
+                {/* COMPLETA TU OUTFIT (SUGERIDO) */}
+                {recommendedForCart && (
+                  <div style={{ backgroundColor: '#141416', border: '1px solid #27272a', borderRadius: '10px', padding: '10px 12px', marginBottom: '14px' }}>
+                    <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#e2c044', letterSpacing: '0.5px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '6px' }}>
+                      <i className="fa-solid fa-wand-magic-sparkles"></i> COMPLETA TU OUTFIT (SUGERIDO)
+                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                        <img
+                          src={recommendedForCart.image}
+                          alt={recommendedForCart.name}
+                          style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '6px' }}
+                        />
+                        <div style={{ minWidth: 0 }}>
+                          <h5 style={{ margin: 0, fontSize: '0.78rem', fontWeight: 800, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {recommendedForCart.name}
+                          </h5>
+                          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#e2c044' }}>
+                            ${formatCurrency(recommendedForCart.price)}
+                          </span>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        style={{
+                          padding: '5px 10px',
+                          borderRadius: '6px',
+                          backgroundColor: '#e2c044',
+                          color: '#000',
+                          fontSize: '0.72rem',
+                          fontWeight: 800,
+                          border: 'none',
+                          cursor: 'pointer',
+                          whiteSpace: 'nowrap'
+                        }}
+                        onClick={() => addToCart(recommendedForCart, recommendedForCart.sizes ? recommendedForCart.sizes[0] : 'L', 1)}
+                      >
+                        + AGREGAR
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <div className="coupon-box">
                   <input
                     type="text"

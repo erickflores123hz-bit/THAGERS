@@ -13,12 +13,34 @@ export default function ProductModal() {
     recommendedSize,
     addToCart,
     openSmartSizerModal,
-    setIsCheckoutModalOpen
+    setIsCheckoutModalOpen,
+    products,
+    addOutfitBundle
   } = useApp();
 
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedSize, setSelectedSize] = useState('L');
   const [qty, setQty] = useState(1);
+  const [showMeasurementsTable, setShowMeasurementsTable] = useState(false);
+
+  // Lógica de recomendación de outfit complementario (Match the Fit)
+  const matchingProduct = React.useMemo(() => {
+    if (!selectedProduct || !products || products.length <= 1) return null;
+    const cat = selectedProduct.category;
+    if (cat === 'sudaderas') {
+      return products.find((p) => p.category === 'vaqueros') || products.find((p) => p.category === 'accesorios');
+    } else if (cat === 'vaqueros') {
+      return products.find((p) => p.category === 'sudaderas') || products.find((p) => p.category === 'camisetas');
+    } else if (cat === 'camisetas') {
+      return products.find((p) => p.category === 'accesorios') || products.find((p) => p.category === 'vaqueros');
+    } else {
+      return products.find((p) => p.category === 'sudaderas') || products[0];
+    }
+  }, [selectedProduct, products]);
+
+  const bundleOriginalTotal = selectedProduct && matchingProduct ? selectedProduct.price + matchingProduct.price : 0;
+  const bundleDiscountedTotal = Math.round(bundleOriginalTotal * 0.85); // 15% OFF
+  const bundleSavings = bundleOriginalTotal - bundleDiscountedTotal;
 
   useEffect(() => {
     if (selectedProduct) {
@@ -191,9 +213,20 @@ export default function ProductModal() {
                 <div className="selector-group">
                   <div className="size-header-row">
                     <label>SELECCIONA TALLA:</label>
-                    <button className="size-guide-link" onClick={openSmartSizerModal}>
-                      ¿Cuál es mi talla ideal?
-                    </button>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <button
+                        type="button"
+                        className="size-guide-link"
+                        style={{ color: '#e2c044', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                        onClick={() => setShowMeasurementsTable(!showMeasurementsTable)}
+                      >
+                        <i className="fa-solid fa-ruler-horizontal"></i>
+                        <span>{showMeasurementsTable ? 'Ocultar medidas en cm' : 'Tabla de Medidas (cm)'}</span>
+                      </button>
+                      <button type="button" className="size-guide-link" onClick={openSmartSizerModal}>
+                        Calcular talle
+                      </button>
+                    </div>
                   </div>
                   <div className="size-options">
                     {sizes.map((s) => (
@@ -209,6 +242,103 @@ export default function ProductModal() {
                       </motion.button>
                     ))}
                   </div>
+
+                  {/* TABLA TÉCNICA DE MEDIDAS EN CM Y FICHA DEL MODELO */}
+                  {showMeasurementsTable && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.2 }}
+                      style={{
+                        marginTop: '12px',
+                        padding: '12px',
+                        backgroundColor: '#121215',
+                        border: '1px solid #27272a',
+                        borderRadius: '10px'
+                      }}
+                    >
+                      <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#e2c044', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '8px' }}>
+                        <i className="fa-solid fa-table-cells" style={{ marginRight: '5px' }}></i>
+                        MEDIDAS REALES DE LA PRENDA EN CENTÍMETROS (CM)
+                      </span>
+
+                      {selectedProduct.category === 'vaqueros' ? (
+                        <table style={{ width: '100%', fontSize: '0.75rem', textAlign: 'center', borderCollapse: 'collapse', color: '#ddd' }}>
+                          <thead>
+                            <tr style={{ borderBottom: '1px solid #333', color: '#888' }}>
+                              <th style={{ padding: '6px' }}>Talle</th>
+                              <th style={{ padding: '6px' }}>Cintura</th>
+                              <th style={{ padding: '6px' }}>Largo Total</th>
+                              <th style={{ padding: '6px' }}>Botamanga Baggy</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {[
+                              { sz: 'S / 30', c: '38 cm', l: '104 cm', b: '26 cm' },
+                              { sz: 'M / 32', c: '40 cm', l: '106 cm', b: '27 cm' },
+                              { sz: 'L / 34', c: '42 cm', l: '108 cm', b: '28 cm' },
+                              { sz: 'XL / 36', c: '44 cm', l: '110 cm', b: '29 cm' },
+                              { sz: 'XXL / 38', c: '46 cm', l: '112 cm', b: '30 cm' }
+                            ].map((row, idx) => (
+                              <tr key={idx} style={{ borderBottom: '1px solid #1c1c20', backgroundColor: selectedSize === row.sz.split(' ')[0] ? 'rgba(226, 192, 68, 0.1)' : 'transparent' }}>
+                                <td style={{ padding: '6px', fontWeight: 700, color: '#fff' }}>{row.sz}</td>
+                                <td style={{ padding: '6px' }}>{row.c}</td>
+                                <td style={{ padding: '6px' }}>{row.l}</td>
+                                <td style={{ padding: '6px', color: '#10b981', fontWeight: 700 }}>{row.b}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      ) : selectedProduct.category === 'accesorios' ? (
+                        <div style={{ fontSize: '0.78rem', color: '#ccc', padding: '6px 0' }}>
+                          • <b>Cadena:</b> 55 cm de largo total, eslabones reforzados de 14 mm.<br />
+                          • <b>Anillos:</b> Diámetros disponibles 18 mm, 20 mm y 22 mm en fundición pesada.
+                        </div>
+                      ) : (
+                        <table style={{ width: '100%', fontSize: '0.75rem', textAlign: 'center', borderCollapse: 'collapse', color: '#ddd' }}>
+                          <thead>
+                            <tr style={{ borderBottom: '1px solid #333', color: '#888' }}>
+                              <th style={{ padding: '6px' }}>Talle</th>
+                              <th style={{ padding: '6px' }}>Pecho (Sisa)</th>
+                              <th style={{ padding: '6px' }}>Largo Total</th>
+                              <th style={{ padding: '6px' }}>Largo Manga</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {[
+                              { sz: 'S', p: '58 cm', l: '68 cm', m: '60 cm' },
+                              { sz: 'M', p: '62 cm', l: '71 cm', m: '62 cm' },
+                              { sz: 'L', p: '66 cm', l: '74 cm', m: '64 cm' },
+                              { sz: 'XL', p: '70 cm', l: '77 cm', m: '66 cm' },
+                              { sz: 'XXL', p: '74 cm', l: '80 cm', m: '68 cm' }
+                            ].map((row, idx) => (
+                              <tr key={idx} style={{ borderBottom: '1px solid #1c1c20', backgroundColor: selectedSize === row.sz ? 'rgba(226, 192, 68, 0.1)' : 'transparent' }}>
+                                <td style={{ padding: '6px', fontWeight: 700, color: '#fff' }}>{row.sz}</td>
+                                <td style={{ padding: '6px', color: '#10b981', fontWeight: 700 }}>{row.p}</td>
+                                <td style={{ padding: '6px' }}>{row.l}</td>
+                                <td style={{ padding: '6px' }}>{row.m}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      )}
+
+                      {/* FICHA TÉCNICA DEL MODELO */}
+                      <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #222', fontSize: '0.75rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#e2c044', fontWeight: 800, marginBottom: '2px' }}>
+                          <i className="fa-solid fa-person"></i>
+                          <span>FICHA DE REFERENCIA DEL MODELO</span>
+                        </div>
+                        <p style={{ margin: 0, color: '#d4d4d8' }}>
+                          El modelo en foto mide <b>1.84 m</b>, pesa <b>78 kg</b> y viste <b>talle L</b> (Corte Baggy Oversize).
+                        </p>
+                        <span style={{ fontSize: '0.7rem', color: '#888', display: 'block', marginTop: '2px' }}>
+                          Calce amplio auténtico. Elige tu talle regular o uno superior para look ultra suelto 90s.
+                        </span>
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
 
                 {/* SELECTOR DE CANTIDAD */}
@@ -263,6 +393,80 @@ export default function ProductModal() {
                     <i className="fa-solid fa-shield-halved"></i> Garantía de autenticidad y cambios
                   </div>
                 </div>
+
+                {/* COMPLETA TU OUTFIT (MATCH THE FIT / BUNDLE VENTA CRUZADA) */}
+                {matchingProduct && (
+                  <div style={{ marginTop: '20px', padding: '16px', borderRadius: '12px', backgroundColor: '#121215', border: '1px solid #27272a' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                      <span style={{ fontSize: '0.74rem', fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase', color: '#e2c044', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <i className="fa-solid fa-wand-magic-sparkles"></i> COMPLETA TU OUTFIT (MATCH THE FIT)
+                      </span>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 800, backgroundColor: 'rgba(226, 192, 68, 0.15)', color: '#e2c044', padding: '2px 6px', borderRadius: '4px' }}>
+                        15% OFF EN COMBO
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center', backgroundColor: '#09090b', padding: '10px', borderRadius: '8px', border: '1px solid #1e1e22', marginBottom: '12px' }}>
+                      <img
+                        src={matchingProduct.image}
+                        alt={matchingProduct.name}
+                        style={{ width: '54px', height: '54px', objectFit: 'cover', borderRadius: '6px' }}
+                      />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <h5 style={{ fontSize: '0.84rem', fontWeight: 800, color: '#fff', margin: '0 0 2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          + {matchingProduct.name}
+                        </h5>
+                        <div style={{ fontSize: '0.72rem', color: '#aaa' }}>
+                          Talles: {matchingProduct.sizes ? matchingProduct.sizes.join(', ') : 'Único'}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                          <span style={{ fontSize: '0.85rem', fontWeight: 900, color: '#e2c044' }}>
+                            ${formatCurrency(Math.round(matchingProduct.price * 0.85))}
+                          </span>
+                          <span style={{ fontSize: '0.72rem', color: '#666', textDecoration: 'line-through' }}>
+                            ${formatCurrency(matchingProduct.price)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', fontSize: '0.78rem' }}>
+                      <span style={{ color: '#aaa' }}>Total combo con 15% OFF:</span>
+                      <div>
+                        <span style={{ fontSize: '1rem', fontWeight: 900, color: '#fff' }}>
+                          ${formatCurrency(bundleDiscountedTotal)}
+                        </span>
+                        <span style={{ fontSize: '0.72rem', color: '#10b981', marginLeft: '6px', fontWeight: 700 }}>
+                          (Ahorras ${formatCurrency(bundleSavings)})
+                        </span>
+                      </div>
+                    </div>
+
+                    <motion.button
+                      type="button"
+                      className="btn btn-primary btn-block btn-sm"
+                      style={{
+                        backgroundColor: '#e2c044',
+                        color: '#000',
+                        fontWeight: 800,
+                        fontSize: '0.78rem',
+                        padding: '10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      onClick={() => {
+                        addOutfitBundle(selectedProduct, matchingProduct, 15);
+                        setIsProductModalOpen(false);
+                      }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.96 }}
+                    >
+                      <i className="fa-solid fa-plus-circle"></i> AÑADIR OUTFIT COMPLETO (2 PRENDAS)
+                    </motion.button>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>

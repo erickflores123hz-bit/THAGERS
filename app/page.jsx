@@ -15,6 +15,7 @@ import CheckoutModal from '../components/CheckoutModal';
 import AdminModal from '../components/AdminModal';
 import AuthModal from '../components/AuthModal';
 import OrderTrackingModal from '../components/OrderTrackingModal';
+import DigitalReceiptModal from '../components/DigitalReceiptModal';
 import ToastContainer from '../components/ToastContainer';
 
 export default function HomePage() {
@@ -46,6 +47,7 @@ export default function HomePage() {
       <AdminModal />
       <AuthModal />
       <OrderTrackingModal />
+      <DigitalReceiptModal />
       <ToastContainer />
     </div>
   );

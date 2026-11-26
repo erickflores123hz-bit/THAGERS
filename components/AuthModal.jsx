@@ -18,7 +18,8 @@ export default function AuthModal() {
     products,
     setIsAdminModalOpen,
     openProductModal,
-    openTrackingModal
+    openTrackingModal,
+    openReceiptModal
   } = useApp();
 
   const [authTab, setAuthTab] = useState('login');
@@ -283,27 +284,50 @@ export default function AuthModal() {
                             </div>
                           )}
 
-                          <button
-                            type="button"
-                            className="btn btn-primary btn-block btn-sm"
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '8px',
-                              backgroundColor: '#10b981',
-                              color: '#000',
-                              fontWeight: 800,
-                              fontSize: '0.78rem',
-                              padding: '8px'
-                            }}
-                            onClick={() => {
-                              setIsAuthModalOpen(false);
-                              openTrackingModal(ord.id);
-                            }}
-                          >
-                            <i className="fa-solid fa-truck-fast"></i> VER CAMIONCITO Y MAPA EN VIVO
-                          </button>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '8px' }}>
+                            <button
+                              type="button"
+                              className="btn btn-primary btn-sm"
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px',
+                                backgroundColor: '#10b981',
+                                color: '#000',
+                                fontWeight: 800,
+                                fontSize: '0.74rem',
+                                padding: '8px 10px'
+                              }}
+                              onClick={() => {
+                                setIsAuthModalOpen(false);
+                                openTrackingModal(ord.id);
+                              }}
+                            >
+                              <i className="fa-solid fa-truck-fast"></i> MAPA GPS
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-outline btn-sm"
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px',
+                                borderColor: '#e2c044',
+                                color: '#e2c044',
+                                fontWeight: 800,
+                                fontSize: '0.74rem',
+                                padding: '8px 10px'
+                              }}
+                              onClick={() => {
+                                setIsAuthModalOpen(false);
+                                openReceiptModal(ord);
+                              }}
+                            >
+                              <i className="fa-solid fa-receipt"></i> TICKET
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
