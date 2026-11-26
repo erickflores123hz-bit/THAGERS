@@ -128,7 +128,6 @@ export default function Catalog() {
         <motion.div layout className="products-grid" id="productsGrid">
           <AnimatePresence mode="popLayout">
             {sorted.map((product) => {
-              const isLowStock = product.stock <= 5;
               const primaryImage = product.image || (product.images && product.images[0]);
               const secondaryImage = product.images && product.images.length > 1 ? product.images[1] : null;
 
@@ -174,18 +173,8 @@ export default function Catalog() {
                   </div>
 
                   <div className="product-card-body">
-                    {/* STOCK Y ORIGEN */}
-                    <div className="product-brand-line">
-                      <span>TAGHER'S ARCHIVE</span>
-                      {isLowStock ? (
-                        <span className="stock-pill low">Stock limitado ({product.stock} u.)</span>
-                      ) : (
-                        <span className="stock-pill in-stock">{product.stock} disponibles</span>
-                      )}
-                    </div>
-
                     {/* TALLES DISPONIBLES DE LA PRENDA */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px', margin: '6px 0 8px', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px', margin: '4px 0 8px', flexWrap: 'wrap' }}>
                       <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#a1a1aa', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                         Talles:
                       </span>

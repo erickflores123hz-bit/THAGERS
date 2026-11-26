@@ -164,7 +164,6 @@ export default function ProductModal() {
 
               {/* PANEL DE DETALLES */}
               <div className="product-info-panel">
-                <div className="brand-tag">TAGHER'S ARCHIVE 2026</div>
                 <h2>{selectedProduct.name}</h2>
 
                 <div className="product-price-row">
