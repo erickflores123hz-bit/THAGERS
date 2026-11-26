@@ -74,70 +74,53 @@ export function AppProvider({ children }) {
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
 
   // Estado de Usuarios
-  const [users, setUsers] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('taghers_users_v2');
-      if (saved) {
-        try { return JSON.parse(saved); } catch (e) {}
-      }
-    }
-    return DEFAULT_USERS;
-  });
+  const [users, setUsers] = useState(DEFAULT_USERS);
 
   // Usuario Activo (Sesión)
-  const [user, setUser] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('taghers_session_user_v2');
-      if (saved) {
-        try { return JSON.parse(saved); } catch (e) {}
-      }
-    }
-    return null;
-  });
+  const [user, setUser] = useState(null);
 
   // Carrito de compras
-  const [cart, setCart] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('taghers_cart_v2');
-      if (saved) {
-        try { return JSON.parse(saved); } catch (e) {}
-      }
-    }
-    return [];
-  });
+  const [cart, setCart] = useState([]);
 
   // Lista de Favoritos (Wishlist)
-  const [wishlist, setWishlist] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('taghers_wishlist_v2');
-      if (saved) {
-        try { return JSON.parse(saved); } catch (e) {}
-      }
-    }
-    return ['hoodie-true-rel', 'vag-ecko'];
-  });
+  const [wishlist, setWishlist] = useState(['hoodie-true-rel', 'vag-ecko']);
 
   // Cupón de descuento
-  const [coupon, setCoupon] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('taghers_coupon_v2');
-      if (saved) {
-        try { return JSON.parse(saved); } catch (e) {}
-      }
-    }
-    return null;
-  });
+  const [coupon, setCoupon] = useState(null);
 
   // Órdenes
-  const [orders, setOrders] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('taghers_orders_v2');
-      if (saved) {
-        try { return JSON.parse(saved); } catch (e) {}
+  const [orders, setOrders] = useState(DEFAULT_ORDERS);
+
+  // Bandera de hidratación segura para LocalStorage
+  const [isStorageLoaded, setIsStorageLoaded] = useState(false);
+
+  // Carga inicial desde LocalStorage en cliente para evitar Hydration Mismatch
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const savedUsers = localStorage.getItem('taghers_users_v2');
+        if (savedUsers) setUsers(JSON.parse(savedUsers));
+
+        const savedUser = localStorage.getItem('taghers_session_user_v2');
+        if (savedUser) setUser(JSON.parse(savedUser));
+
+        const savedCart = localStorage.getItem('taghers_cart_v2');
+        if (savedCart) setCart(JSON.parse(savedCart));
+
+        const savedWishlist = localStorage.getItem('taghers_wishlist_v2');
+        if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
+
+        const savedCoupon = localStorage.getItem('taghers_coupon_v2');
+        if (savedCoupon) setCoupon(JSON.parse(savedCoupon));
+
+        const savedOrders = localStorage.getItem('taghers_orders_v2');
+        if (savedOrders) setOrders(JSON.parse(savedOrders));
       }
+    } catch (e) {
+      console.error('Error cargando almacenamiento local', e);
     }
-    return DEFAULT_ORDERS;
-  });
+    setIsStorageLoaded(true);
+  }, []);
 
   // Filtros de navegación
   const [activeCategory, setActiveCategory] = useState('todos');
@@ -165,48 +148,48 @@ export function AppProvider({ children }) {
 
   // Persistencia local
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (isStorageLoaded && typeof window !== 'undefined') {
       localStorage.setItem('taghers_cart_v2', JSON.stringify(cart));
     }
-  }, [cart]);
+  }, [cart, isStorageLoaded]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (isStorageLoaded && typeof window !== 'undefined') {
       localStorage.setItem('taghers_wishlist_v2', JSON.stringify(wishlist));
     }
-  }, [wishlist]);
+  }, [wishlist, isStorageLoaded]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (isStorageLoaded && typeof window !== 'undefined') {
       localStorage.setItem('taghers_users_v2', JSON.stringify(users));
     }
-  }, [users]);
+  }, [users, isStorageLoaded]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (isStorageLoaded && typeof window !== 'undefined') {
       localStorage.setItem('taghers_orders_v2', JSON.stringify(orders));
     }
-  }, [orders]);
+  }, [orders, isStorageLoaded]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (isStorageLoaded && typeof window !== 'undefined') {
       if (user) {
         localStorage.setItem('taghers_session_user_v2', JSON.stringify(user));
       } else {
         localStorage.removeItem('taghers_session_user_v2');
       }
     }
-  }, [user]);
+  }, [user, isStorageLoaded]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (isStorageLoaded && typeof window !== 'undefined') {
       if (coupon) {
         localStorage.setItem('taghers_coupon_v2', JSON.stringify(coupon));
       } else {
         localStorage.removeItem('taghers_coupon_v2');
       }
     }
-  }, [coupon]);
+  }, [coupon, isStorageLoaded]);
 
   // Función Toast
   const showToast = (message, type = 'info') => {

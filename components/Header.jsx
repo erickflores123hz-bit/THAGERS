@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../lib/context';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -17,6 +17,11 @@ export default function Header() {
   } = useApp();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.qty, 0);
 
@@ -233,8 +238,8 @@ export default function Header() {
               title="Mi Cuenta"
             >
               <i className="fa-regular fa-user"></i>
-              <span className="user-badge-name" id="userBadgeName">
-                {user ? user.name.split(' ')[0].toUpperCase() : 'ENTRAR'}
+              <span className="user-badge-name" id="userBadgeName" suppressHydrationWarning>
+                {mounted && user ? user.name.split(' ')[0].toUpperCase() : 'ENTRAR'}
               </span>
             </motion.button>
           </div>
@@ -249,17 +254,20 @@ export default function Header() {
           >
             <i className="fa-solid fa-bag-shopping"></i>
             <AnimatePresence mode="wait">
-              <motion.span
-                key={totalCartCount}
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.5, opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                className="cart-count-badge"
-                id="cartCountBadge"
-              >
-                {totalCartCount}
-              </motion.span>
+              {mounted && totalCartCount > 0 && (
+                <motion.span
+                  key={totalCartCount}
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.5, opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="cart-count-badge"
+                  id="cartCountBadge"
+                  suppressHydrationWarning
+                >
+                  {totalCartCount}
+                </motion.span>
+              )}
             </AnimatePresence>
           </motion.button>
 
