@@ -11,8 +11,17 @@ export default function OrderTrackingModal() {
     setIsTrackingModalOpen,
     trackingOrderCode,
     setTrackingOrderCode,
-    orders
+    orders,
+    user
   } = useApp();
+
+  const userOrders = user
+    ? orders.filter(
+        (o) =>
+          (o.email && o.email.toLowerCase() === user.email.toLowerCase()) ||
+          (o.userId && o.userId === user.id)
+      )
+    : [];
 
   const [inputCode, setInputCode] = useState(trackingOrderCode || 'TAG-9421');
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -48,11 +57,30 @@ export default function OrderTrackingModal() {
     }
   }, [trackingOrderCode, orders, isTrackingModalOpen]);
 
-  // Manejo de búsqueda por código
+  // Manejo de búsqueda por código o email
   const handleSearch = (e) => {
     e.preventDefault();
     const clean = inputCode.trim();
     if (!clean) return;
+
+    // Buscar por ID de orden
+    const foundById = orders.find(
+      (o) => o.id.toLowerCase() === clean.toLowerCase()
+    );
+    if (foundById) {
+      setTrackingOrderCode(foundById.id);
+      return;
+    }
+
+    // Buscar por email de cliente
+    const foundByEmail = orders.find(
+      (o) => o.email && o.email.toLowerCase() === clean.toLowerCase()
+    );
+    if (foundByEmail) {
+      setTrackingOrderCode(foundByEmail.id);
+      return;
+    }
+
     setTrackingOrderCode(clean);
   };
 
@@ -252,14 +280,14 @@ export default function OrderTrackingModal() {
           {/* CONTENIDO INTERACTIVO */}
           <div className="p-6">
             {/* BUSCADOR DE CÓDIGO DE SEGUIMIENTO */}
-            <form onSubmit={handleSearch} className="mb-6 flex gap-2">
+            <form onSubmit={handleSearch} className="mb-4 flex gap-2">
               <div className="relative flex-1">
                 <i className="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 text-xs"></i>
                 <input
                   type="text"
                   value={inputCode}
                   onChange={(e) => setInputCode(e.target.value.toUpperCase())}
-                  placeholder="Ingresa tu código (ej: TAG-9421)"
+                  placeholder="Ingresa tu código (ej: TAG-8941) o tu email"
                   className="w-full bg-neutral-900 border border-neutral-800 rounded-lg pl-9 pr-4 py-2.5 text-xs text-white uppercase tracking-wider font-mono focus:outline-none focus:border-emerald-500 transition-colors"
                 />
               </div>
@@ -267,6 +295,53 @@ export default function OrderTrackingModal() {
                 BUSCAR PAQUETE
               </button>
             </form>
+
+            {/* PEDIDOS DEL USUARIO LOGUEADO */}
+            {user && userOrders.length > 0 && (
+              <div className="mb-5 p-3 rounded-xl bg-neutral-900/60 border border-neutral-800">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <i className="fa-solid fa-user-check text-emerald-400"></i>
+                    Tus pedidos registrados ({user.name.split(' ')[0]}):
+                  </span>
+                  <span className="text-[10px] text-neutral-500">Toca uno para ver en el mapa</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {userOrders.map((ord) => {
+                    const isActive = selectedOrder?.id === ord.id;
+                    return (
+                      <button
+                        key={ord.id}
+                        type="button"
+                        onClick={() => {
+                          setInputCode(ord.id);
+                          setTrackingOrderCode(ord.id);
+                        }}
+                        style={{
+                          padding: '6px 12px',
+                          borderRadius: '8px',
+                          fontSize: '0.75rem',
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                          border: isActive ? '1px solid #10b981' : '1px solid #333',
+                          backgroundColor: isActive ? 'rgba(16, 185, 129, 0.2)' : '#18181b',
+                          color: isActive ? '#10b981' : '#ccc',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
+                        }}
+                      >
+                        <i className="fa-solid fa-box"></i>
+                        <span>#{ord.id}</span>
+                        <span style={{ fontSize: '0.7rem', opacity: 0.85, color: ord.status === 'En reparto' ? '#10b981' : '#f59e0b' }}>
+                          • {ord.status}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* GRID PRINCIPAL: MAPA CON CAMIONCITO + DETALLES */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

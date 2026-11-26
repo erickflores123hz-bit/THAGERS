@@ -365,13 +365,16 @@ export function AppProvider({ children }) {
 
   // Crear Orden (Checkout)
   const createOrder = (orderData) => {
+    const customerEmail = user?.email || orderData.email || `${orderData.name.toLowerCase().replace(/\s+/g, '')}@cliente.com`;
     const newOrder = {
       id: `TAG-${Math.floor(1000 + Math.random() * 9000)}`,
       customer: orderData.name,
-      email: user?.email || `${orderData.name.toLowerCase().replace(/\s+/g, '')}@cliente.com`,
+      email: customerEmail,
+      userId: user?.id || null,
+      phone: orderData.phone || '',
       items: [...cart],
       total: orderData.total,
-      paymentMethod: orderData.paymentMethod === 'card' ? 'Tarjeta de Crédito' : 'Mercado Pago',
+      paymentMethod: orderData.paymentMethod || 'Tarjeta de Crédito',
       status: 'En preparación',
       date: new Date().toISOString().split('T')[0],
       address: `${orderData.address}, ${orderData.city}`

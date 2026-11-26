@@ -18,6 +18,7 @@ export default function CheckoutModal() {
   } = useApp();
 
   const [name, setName] = useState(user ? user.name : '');
+  const [email, setEmail] = useState(user ? user.email : '');
   const [phone, setPhone] = useState(user ? user.phone || '' : '');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('Buenos Aires');
@@ -76,6 +77,7 @@ export default function CheckoutModal() {
 
       const newOrder = createOrder({
         name,
+        email,
         phone,
         address,
         city,
@@ -205,6 +207,17 @@ export default function CheckoutModal() {
                       onChange={(e) => setPhone(e.target.value)}
                     />
                   </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Email para Notificaciones y Seguimiento de Envío</label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="tu@correo.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 </div>
 
                 <div className="form-group">

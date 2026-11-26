@@ -17,7 +17,8 @@ export default function AuthModal() {
     wishlist,
     products,
     setIsAdminModalOpen,
-    openProductModal
+    openProductModal,
+    openTrackingModal
   } = useApp();
 
   const [authTab, setAuthTab] = useState('login');
@@ -49,6 +50,15 @@ export default function AuthModal() {
 
   // Favoritos del usuario
   const wishlistItems = products.filter((p) => wishlist.includes(p.id));
+
+  // Órdenes exclusivas del usuario actual
+  const userOrders = user
+    ? orders.filter(
+        (o) =>
+          (o.email && o.email.toLowerCase() === user.email.toLowerCase()) ||
+          (o.userId && o.userId === user.id)
+      )
+    : [];
 
   return (
     <AnimatePresence>
@@ -211,21 +221,93 @@ export default function AuthModal() {
 
                 <div className="profile-section">
                   <h4>
-                    <i className="fa-solid fa-clock-rotate-left"></i> Historial de Pedidos ({orders.length})
+                    <i className="fa-solid fa-clock-rotate-left"></i> Mis Pedidos Realizados ({userOrders.length})
                   </h4>
-                  <div className="orders-list">
-                    {orders.slice(0, 3).map((ord) => (
-                      <div className="order-history-card" key={ord.id}>
-                        <div className="order-history-header">
-                          <b>#{ord.id}</b>
-                          <span>${formatCurrency(ord.total)}</span>
+                  {userOrders.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '20px 14px', backgroundColor: '#141416', borderRadius: '10px', border: '1px dashed #333' }}>
+                      <i className="fa-solid fa-box-open" style={{ fontSize: '1.8rem', color: '#666', marginBottom: '8px' }}></i>
+                      <p style={{ color: '#aaa', fontSize: '0.85rem', margin: '0 0 10px' }}>Aún no tienes pedidos registrados con tu cuenta.</p>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline"
+                        onClick={() => setIsAuthModalOpen(false)}
+                      >
+                        EXPLORAR CATÁLOGO
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="orders-list">
+                      {userOrders.map((ord) => (
+                        <div
+                          className="order-history-card"
+                          key={ord.id}
+                          style={{
+                            padding: '12px 14px',
+                            border: '1px solid #27272a',
+                            borderRadius: '10px',
+                            marginBottom: '10px',
+                            backgroundColor: '#141416'
+                          }}
+                        >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                            <span style={{ fontWeight: 800, color: '#fff', fontSize: '0.92rem' }}>
+                              Orden #{ord.id}
+                            </span>
+                            <span style={{ fontWeight: 900, color: '#e2c044', fontSize: '0.95rem' }}>
+                              ${formatCurrency(ord.total)}
+                            </span>
+                          </div>
+
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.76rem', color: '#888', marginBottom: '8px' }}>
+                            <span>{ord.date}</span>
+                            <span
+                              style={{
+                                fontWeight: 800,
+                                color: ord.status === 'En reparto' ? '#10b981' : ord.status === 'Entregado' ? '#60a5fa' : '#f59e0b',
+                                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                                padding: '2px 8px',
+                                borderRadius: '4px'
+                              }}
+                            >
+                              {ord.status}
+                            </span>
+                          </div>
+
+                          {ord.items && ord.items.length > 0 && (
+                            <div style={{ fontSize: '0.74rem', color: '#bbb', marginBottom: '10px', borderTop: '1px solid #222', paddingTop: '6px' }}>
+                              {ord.items.map((it, idx) => (
+                                <div key={idx} style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                                  • {it.name} (x{it.qty})
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          <button
+                            type="button"
+                            className="btn btn-primary btn-block btn-sm"
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '8px',
+                              backgroundColor: '#10b981',
+                              color: '#000',
+                              fontWeight: 800,
+                              fontSize: '0.78rem',
+                              padding: '8px'
+                            }}
+                            onClick={() => {
+                              setIsAuthModalOpen(false);
+                              openTrackingModal(ord.id);
+                            }}
+                          >
+                            <i className="fa-solid fa-truck-fast"></i> VER CAMIONCITO Y MAPA EN VIVO
+                          </button>
                         </div>
-                        <div style={{ fontSize: '0.8rem', color: '#666' }}>
-                          {ord.date} • {ord.status}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="profile-section">
