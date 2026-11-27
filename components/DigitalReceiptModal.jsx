@@ -273,24 +273,53 @@ export default function DigitalReceiptModal() {
       {/* ESTILOS DE IMPRESIÓN LIMPIOS / PDF */}
       <style jsx global>{`
         @media print {
+          @page {
+            margin: 12mm;
+            size: auto;
+          }
+          html, body {
+            background: #ffffff !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: visible !important;
+            height: auto !important;
+          }
           body * {
             visibility: hidden !important;
+          }
+          .modal-overlay, .modal-card {
+            position: static !important;
+            display: block !important;
+            overflow: visible !important;
+            max-height: none !important;
+            max-width: none !important;
+            width: 100% !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            inset: auto !important;
           }
           #printableReceipt,
           #printableReceipt * {
             visibility: visible !important;
           }
           #printableReceipt {
-            position: absolute !important;
+            position: relative !important;
             left: 0 !important;
             top: 0 !important;
             width: 100% !important;
+            max-width: 650px !important;
+            margin: 0 auto !important;
             height: auto !important;
             background: #ffffff !important;
             color: #000000 !important;
-            border: 1px solid #ddd !important;
+            border: 1px solid #d4d4d8 !important;
+            border-radius: 8px !important;
             box-shadow: none !important;
-            padding: 30px !important;
+            padding: 24px !important;
+            page-break-inside: avoid !important;
           }
           #printableReceipt div,
           #printableReceipt span,
@@ -298,7 +327,7 @@ export default function DigitalReceiptModal() {
           #printableReceipt p {
             color: #000000 !important;
             background: transparent !important;
-            border-color: #e5e5e5 !important;
+            border-color: #e4e4e7 !important;
           }
           .no-print {
             display: none !important;
