@@ -240,7 +240,7 @@ export default function OrderTrackingModal() {
   if (!user) {
     return (
       <AnimatePresence>
-        <div className="modal-overlay active" style={{ zIndex: 1200 }}>
+        <div key="tracking-auth-gate" className="modal-overlay active" style={{ zIndex: 1200 }}>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -325,7 +325,7 @@ export default function OrderTrackingModal() {
   if (activeOrdersList.length === 0 && user.role !== 'admin') {
     return (
       <AnimatePresence>
-        <div className="modal-overlay active" style={{ zIndex: 1200 }}>
+        <div key="tracking-auth-gate" className="modal-overlay active" style={{ zIndex: 1200 }}>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -406,7 +406,7 @@ export default function OrderTrackingModal() {
 
   return (
     <AnimatePresence>
-      <div className="modal-overlay active" style={{ zIndex: 1200 }}>
+      <div key="tracking-main-modal" className="modal-overlay active" style={{ zIndex: 1200 }}>
         {/* BACKDROP BLUR OSCURECIDO */}
         <motion.div
           initial={{ opacity: 0 }}
