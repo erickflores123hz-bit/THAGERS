@@ -205,33 +205,38 @@ export default function Catalog() {
                       {product.name}
                     </h3>
 
-                    {/* PRECIOS ESPECÍFICOS Y FORMAS DE PAGO */}
+                    {/* PRECIOS ACTUALIZADOS CON DESCUENTO */}
                     <div style={{ margin: '8px 0 14px' }}>
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#fff' }}>
+                      {product.oldPrice && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px' }}>
+                          <span style={{ fontSize: '0.72rem', color: '#71717a', textTransform: 'uppercase' }}>Antes:</span>
+                          <span style={{ fontSize: '0.84rem', color: '#71717a', textDecoration: 'line-through' }}>
+                            ${formatCurrency(product.oldPrice)}
+                          </span>
+                          <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '1px 6px', borderRadius: '4px' }}>
+                            {Math.round((1 - product.price / product.oldPrice) * 100)}% OFF
+                          </span>
+                        </div>
+                      )}
+
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '1.3rem', fontWeight: 900, color: '#ffffff' }}>
                           ${formatCurrency(product.price)}
                         </span>
-                        {product.oldPrice && (
-                          <>
-                            <span style={{ fontSize: '0.85rem', color: '#71717a', textDecoration: 'line-through' }}>
-                              ${formatCurrency(product.oldPrice)}
-                            </span>
-                            <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.12)', padding: '2px 6px', borderRadius: '4px' }}>
-                              {Math.round((1 - product.price / product.oldPrice) * 100)}% OFF
-                            </span>
-                          </>
-                        )}
+                        <span style={{ fontSize: '0.68rem', color: '#10b981', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          Precio con descuento
+                        </span>
                       </div>
 
                       {/* CONDICIONES DE PAGO ESPECÍFICAS */}
-                      <div style={{ marginTop: '5px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                        <span style={{ fontSize: '0.74rem', color: '#e2c044', fontWeight: 700 }}>
-                          <i className="fa-solid fa-credit-card" style={{ marginRight: '5px', fontSize: '0.68rem' }}></i>
-                          3 cuotas fijas de <b>${formatCurrency(Math.round(product.price / 3))}</b> sin interés
+                      <div style={{ marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                        <span style={{ fontSize: '0.74rem', color: '#34d399', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '5px' }}>
+                          <i className="fa-solid fa-building-columns" style={{ fontSize: '0.68rem' }}></i>
+                          <b>${formatCurrency(Math.round(product.price * 0.9))}</b> con transferencia <span style={{ fontSize: '0.65rem', color: '#10b981', fontWeight: 800 }}>(10% OFF EXTRA)</span>
                         </span>
-                        <span style={{ fontSize: '0.72rem', color: '#34d399', fontWeight: 600 }}>
-                          <i className="fa-solid fa-building-columns" style={{ marginRight: '5px', fontSize: '0.68rem' }}></i>
-                          <b>${formatCurrency(Math.round(product.price * 0.9))}</b> abonando por transferencia
+                        <span style={{ fontSize: '0.73rem', color: '#e2c044', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}>
+                          <i className="fa-solid fa-credit-card" style={{ fontSize: '0.68rem' }}></i>
+                          3 cuotas fijas de <b>${formatCurrency(Math.round(product.price / 3))}</b> sin interés
                         </span>
                       </div>
                     </div>

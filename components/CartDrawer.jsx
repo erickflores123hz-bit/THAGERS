@@ -174,29 +174,39 @@ export default function CartDrawer() {
                 {/* COMPLETA TU OUTFIT (SUGERIDO) */}
                 {recommendedForCart && (
                   <div style={{ backgroundColor: '#141416', border: '1px solid #27272a', borderRadius: '10px', padding: '10px 12px', marginBottom: '14px' }}>
-                    <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#e2c044', letterSpacing: '0.5px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '6px' }}>
-                      <i className="fa-solid fa-wand-magic-sparkles"></i> COMPLETA TU OUTFIT (SUGERIDO)
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#e2c044', letterSpacing: '0.5px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <i className="fa-solid fa-wand-magic-sparkles"></i> COMPLETA TU OUTFIT (SUGERIDO)
+                      </span>
+                      <span style={{ fontSize: '0.64rem', fontWeight: 800, color: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.15)', padding: '1px 5px', borderRadius: '4px' }}>
+                        15% OFF EXTRA
+                      </span>
+                    </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
                         <img
                           src={recommendedForCart.image}
                           alt={recommendedForCart.name}
-                          style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '6px' }}
+                          style={{ width: '42px', height: '42px', objectFit: 'cover', borderRadius: '6px' }}
                         />
                         <div style={{ minWidth: 0 }}>
                           <h5 style={{ margin: 0, fontSize: '0.78rem', fontWeight: 800, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                             {recommendedForCart.name}
                           </h5>
-                          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#e2c044' }}>
-                            ${formatCurrency(recommendedForCart.price)}
-                          </span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                            <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#e2c044' }}>
+                              ${formatCurrency(Math.round(recommendedForCart.price * 0.85))}
+                            </span>
+                            <span style={{ fontSize: '0.68rem', color: '#71717a', textDecoration: 'line-through' }}>
+                              ${formatCurrency(recommendedForCart.price)}
+                            </span>
+                          </div>
                         </div>
                       </div>
                       <button
                         type="button"
                         style={{
-                          padding: '5px 10px',
+                          padding: '6px 12px',
                           borderRadius: '6px',
                           backgroundColor: '#e2c044',
                           color: '#000',
@@ -206,7 +216,11 @@ export default function CartDrawer() {
                           cursor: 'pointer',
                           whiteSpace: 'nowrap'
                         }}
-                        onClick={() => addToCart(recommendedForCart, recommendedForCart.sizes ? recommendedForCart.sizes[0] : 'L', 1)}
+                        onClick={() => addToCart(
+                          { ...recommendedForCart, price: Math.round(recommendedForCart.price * 0.85), name: `${recommendedForCart.name} (Match Fit)` },
+                          recommendedForCart.sizes ? recommendedForCart.sizes[0] : 'L',
+                          1
+                        )}
                       >
                         + AGREGAR
                       </button>

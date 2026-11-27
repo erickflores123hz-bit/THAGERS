@@ -188,23 +188,45 @@ export default function ProductModal() {
               <div className="product-info-panel">
                 <h2>{selectedProduct.name}</h2>
 
-                <div className="product-price-row">
-                  <span className="price-current">${formatCurrency(selectedProduct.price)}</span>
+                <div style={{ margin: '12px 0 16px' }}>
                   {selectedProduct.oldPrice && (
-                    <span className="price-old">${formatCurrency(selectedProduct.oldPrice)}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '0.8rem', color: '#71717a' }}>Precio de lista:</span>
+                      <span style={{ fontSize: '0.95rem', color: '#71717a', textDecoration: 'line-through' }}>
+                        ${formatCurrency(selectedProduct.oldPrice)}
+                      </span>
+                      <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '2px 8px', borderRadius: '4px' }}>
+                        {Math.round((1 - selectedProduct.price / selectedProduct.oldPrice) * 100)}% OFF
+                      </span>
+                    </div>
                   )}
+
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: '1.75rem', fontWeight: 900, color: '#ffffff' }}>
+                      ${formatCurrency(selectedProduct.price)}
+                    </span>
+                    <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 800, textTransform: 'uppercase' }}>
+                      Precio actualizado con descuento
+                    </span>
+                  </div>
                 </div>
 
                 {/* DETALLE ESPECÍFICO DE FINANCIACIÓN Y MEDIOS DE PAGO */}
-                <div style={{ backgroundColor: '#141416', padding: '10px 14px', borderRadius: '8px', border: '1px solid #27272a', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <span style={{ fontSize: '0.8rem', color: '#e2c044', fontWeight: 700 }}>
-                    <i className="fa-solid fa-credit-card" style={{ marginRight: '6px' }}></i>
-                    Hasta <b>3 cuotas fijas sin interés</b> de <b>${formatCurrency(Math.round(selectedProduct.price / 3))}</b>
-                  </span>
-                  <span style={{ fontSize: '0.78rem', color: '#34d399', fontWeight: 600 }}>
+                <div style={{ backgroundColor: '#141416', padding: '12px 14px', borderRadius: '10px', border: '1px solid #27272a', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <span style={{ fontSize: '0.84rem', color: '#34d399', fontWeight: 700 }}>
                     <i className="fa-solid fa-building-columns" style={{ marginRight: '6px' }}></i>
-                    <b>${formatCurrency(Math.round(selectedProduct.price * 0.9))}</b> abonando por Transferencia (10% OFF)
+                    <b>${formatCurrency(Math.round(selectedProduct.price * 0.9))}</b> abonando por Transferencia Bancaria <span style={{ color: '#10b981', fontWeight: 800 }}>(10% OFF EXTRA)</span>
                   </span>
+                  <span style={{ fontSize: '0.82rem', color: '#e2c044', fontWeight: 600 }}>
+                    <i className="fa-solid fa-credit-card" style={{ marginRight: '6px' }}></i>
+                    Hasta <b>3 cuotas fijas sin interés</b> de <b>${formatCurrency(Math.round(selectedProduct.price / 3))}</b> con todas las tarjetas
+                  </span>
+                  {selectedProduct.oldPrice && (
+                    <span style={{ fontSize: '0.74rem', color: '#a1a1aa' }}>
+                      <i className="fa-solid fa-tag" style={{ marginRight: '6px', color: '#10b981' }}></i>
+                      Ahorras <b>${formatCurrency(selectedProduct.oldPrice - selectedProduct.price)}</b> con este descuento oficial
+                    </span>
+                  )}
                 </div>
 
                 <p className="product-desc">{selectedProduct.description}</p>
