@@ -88,11 +88,13 @@ export default function Footer() {
                 </a>
               </li>
             )}
-            <li>
-              <a href="#" onClick={(e) => { e.preventDefault(); openTrackingModal(); }} style={{ color: '#10b981', fontWeight: 600 }}>
-                <i className="fa-solid fa-truck-fast"></i> Rastreo de Envíos en Vivo (GPS)
-              </a>
-            </li>
+            {user && (
+              <li>
+                <a href="#" onClick={(e) => { e.preventDefault(); openTrackingModal(); }} style={{ color: '#10b981', fontWeight: 600 }}>
+                  <i className="fa-solid fa-truck-fast"></i> Seguimiento de Mis Pedidos (GPS)
+                </a>
+              </li>
+            )}
             <li>
               <a href="#" onClick={(e) => { e.preventDefault(); openSmartSizerModal(); }}>
                 <i className="fa-solid fa-ruler-combined"></i> Asesor de Talles Corte Baggy

@@ -187,18 +187,20 @@ export default function Header() {
 
         {/* ACCIONES DE CABECERA CON MICRO-INTERACCIONES */}
         <div className="header-actions">
-          {/* BOTÓN SEGUIMIENTO GPS */}
-          <motion.button
-            className="action-btn"
-            style={{ borderColor: 'rgba(52, 211, 153, 0.4)', color: '#34d399' }}
-            onClick={() => openTrackingModal()}
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.94 }}
-            title="Rastrear mi pedido con mapa en vivo y camioncito"
-          >
-            <i className="fa-solid fa-truck-fast"></i>
-            <span className="action-label" style={{ color: '#34d399' }}>SEGUIMIENTO</span>
-          </motion.button>
+          {/* BOTÓN SEGUIMIENTO GPS (DISPONIBLE EXCLUSIVAMENTE CON SESIÓN INICIADA) */}
+          {mounted && user && (
+            <motion.button
+              className="action-btn"
+              style={{ borderColor: 'rgba(52, 211, 153, 0.4)', color: '#34d399' }}
+              onClick={() => openTrackingModal()}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.94 }}
+              title="Rastrear mis pedidos con mapa GPS en vivo"
+            >
+              <i className="fa-solid fa-truck-fast"></i>
+              <span className="action-label" style={{ color: '#34d399' }}>SEGUIMIENTO</span>
+            </motion.button>
+          )}
 
           {/* BOTÓN ASESOR DE TALLE */}
           <motion.button
@@ -314,16 +316,18 @@ export default function Header() {
                   <i className="fa-solid fa-chart-line"></i> Panel Supervisor (Base de Datos)
                 </a>
               )}
-              <button
-                className="mobile-ar-btn"
-                style={{ borderColor: 'rgba(52, 211, 153, 0.4)', color: '#34d399', marginBottom: '8px' }}
-                onClick={() => {
-                  openTrackingModal();
-                  setMobileMenuOpen(false);
-                }}
-              >
-                <i className="fa-solid fa-truck-fast"></i> Rastrear Pedido con GPS
-              </button>
+              {mounted && user && (
+                <button
+                  className="mobile-ar-btn"
+                  style={{ borderColor: 'rgba(52, 211, 153, 0.4)', color: '#34d399', marginBottom: '8px' }}
+                  onClick={() => {
+                    openTrackingModal();
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  <i className="fa-solid fa-truck-fast"></i> Rastrear Mis Pedidos (GPS)
+                </button>
+              )}
               <button
                 className="mobile-ar-btn"
                 onClick={() => {

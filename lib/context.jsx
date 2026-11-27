@@ -34,21 +34,27 @@ const DEFAULT_ORDERS = [
     id: 'TAG-8941',
     customer: 'Erick Flores',
     email: 'demo@taghers.com',
+    userId: 'usr-demo',
+    phone: '+54 9 11 4455-8899',
+    address: 'Av. Santa Fe 3240, Palermo, CABA',
     items: [
-      { name: "True Religion Crimson Gothic 'REL' Heavy Zip Hoodie", size: 'L', qty: 1, price: 115000 },
-      { name: "Ecko Unltd 2000s Heavy Embroidered Baggy Jeans", size: 'L', qty: 1, price: 92000 }
+      { name: "Crimson Gothic 'REL' Heavy Zip Hoodie", size: 'L', qty: 1, price: 115000 },
+      { name: "2000s Heavy Embroidered Baggy Jeans", size: 'L', qty: 1, price: 92000 }
     ],
     total: 207000,
-    paymentMethod: 'Mercado Pago',
-    status: 'En preparación',
-    date: '2026-10-22'
+    paymentMethod: 'Mercado Pago (Transferencia)',
+    status: 'En reparto',
+    date: 'Hoy, 14:30'
   },
   {
     id: 'TAG-8910',
     customer: 'Lucas Benítez',
     email: 'lucas@gmail.com',
+    userId: 'usr-lucas',
+    phone: '+54 9 11 5566-7788',
+    address: 'Av. Corrientes 4500, Almagro, CABA',
     items: [
-      { name: "Affliction Style Cyber Gothic Wings & Cross Tee", size: 'XL', qty: 2, price: 44000 }
+      { name: "Cyber Gothic Wings & Cross Tee", size: 'XL', qty: 2, price: 44000 }
     ],
     total: 88000,
     paymentMethod: 'Tarjeta de Crédito',
@@ -59,8 +65,11 @@ const DEFAULT_ORDERS = [
     id: 'TAG-8865',
     customer: 'Valentina Rossi',
     email: 'valen.r@hotmail.com',
+    userId: 'usr-valen',
+    phone: '+54 9 11 3322-1100',
+    address: 'Juramento 2100, Belgrano, CABA',
     items: [
-      { name: "Cadena Cubana Gruesa 14mm Acero Inoxidable Silver", size: 'Única', qty: 1, price: 28000 }
+      { name: "Cadena Cubana Gruesa 14mm Silver", size: 'Única', qty: 1, price: 28000 }
     ],
     total: 28000,
     paymentMethod: 'Mercado Pago',
@@ -137,7 +146,7 @@ export function AppProvider({ children }) {
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
-  const [trackingOrderCode, setTrackingOrderCode] = useState('TAG-9421');
+  const [trackingOrderCode, setTrackingOrderCode] = useState(null);
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
   const [receiptOrder, setReceiptOrder] = useState(null);
 
@@ -419,6 +428,11 @@ export function AppProvider({ children }) {
   };
 
   const openTrackingModal = (code) => {
+    if (!user) {
+      setIsAuthModalOpen(true);
+      showToast('Inicia sesión para ver el seguimiento de tus pedidos', 'info');
+      return;
+    }
     if (code) setTrackingOrderCode(code);
     setIsTrackingModalOpen(true);
   };
